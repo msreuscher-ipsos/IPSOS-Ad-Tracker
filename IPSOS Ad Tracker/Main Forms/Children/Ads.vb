@@ -108,59 +108,59 @@ Public Class Cell
     Dim NewCell As New HyperlinkCell("Click to add file(s)", False)
     Sub SetCellFormat()
 
-        Select Case Head.Variable.boxType.Text
-            Case "Text"
-                Select Case Head.Variable.txtName.Text
-                    Case "File_Name"
-                        isFile = True
-                        If ParentAd.Languages.ContainsKey(Head.Languages) Then
-                            Sheet.Ranges(Cell.Address).Data = NewCell
-                            Dim Border As New RangeBorderStyle
-                            Border.Color = Color.Red
-                            Border.Style = BorderLineStyle.Solid
-                            Sheet.SetRangeBorders(Cell.Address, BorderPositions.All, Border)
-                            AddHandler NewCell.Click, AddressOf GetFileName
-                            Sheet.Ranges(Cell.Address).Style.TextColor = Color.Red
-                            NewCell.ActivateColor = Color.DarkGoldenrod
-                            Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
-                        Else
-                            Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
-                            Sheet.Ranges(Cell.Address).Data = "--------------"
-                            Sheet.Ranges(Cell.Address).IsReadonly = True
-                        End If
-                    Case "Medium"
-                        isMedium = True
-                        Dim items As Array = System.Enum.GetNames(GetType(MediaType))
-                        Dim item As String
-                        For Each item In items
-                            dropdown.Items.Add(item)
+        With Head.Variable
+            Select Case CType(.boxType.SelectedItem, DataType).Value
+                Case 1 '"Text"
+                Case 2 '"Punch/Categorical"
+                    If .txtName.Text = "Medium" Then isMedium = True
+                    If .PList.Punches.Count > 0 Then
+                        For Each P As KeyValuePair(Of Integer, Punch) In .PList.Punches
+                            dropdown.Items.Add(.PList.Punches(P.Key))
                         Next
                         Sheet.Ranges(Cell.Address).Data = dropdown
-                        AddHandler dropdown.SelectedItemChanged, AddressOf MediumChanged
-                End Select
-            Case "Number"
-                Dim TmpForm As New NumberDataFormatter.NumberFormatArgs
-                TmpForm.DecimalPlaces = 0
-                TmpForm.UseSeparator = True
-                Sheet.SetRangeDataFormat(Cell.Address, CellDataFormatFlag.Number, TmpForm)
-                Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
-            Case "Yes/No"
-                Sheet.Ranges(Cell.Address).Data = New CheckBoxCell()
-                If Head.Variable.txtName.Text = "Show_Ad" Then
-                    Sheet.Ranges(Cell.Address).Data = True
-                End If
-                Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
-            Case "Date/Time"
-                Sheet.Cells(Cell.Address).DataFormat = CellDataFormatFlag.DateTime
-                Sheet.Ranges(Cell.Address).Data = New DatePickerCell
-                Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
-        End Select
+                        AddHandler dropdown.SelectedItemChanged, AddressOf DropDownChanged
+                    End If
+                Case 3 '"Number"
+                    Dim TmpForm As New NumberDataFormatter.NumberFormatArgs
+                    TmpForm.DecimalPlaces = 0
+                    TmpForm.UseSeparator = True
+                    Sheet.SetRangeDataFormat(Cell.Address, CellDataFormatFlag.Number, TmpForm)
+                    Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
+                Case 4 '"Yes/No"
+                    Sheet.Ranges(Cell.Address).Data = New CheckBoxCell()
+                    If Head.Variable.txtName.Text = "Show_Ad" Then
+                        Sheet.Ranges(Cell.Address).Data = True
+                    End If
+                    Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
+                Case 5 '"Date/Time"
+                    Sheet.Cells(Cell.Address).DataFormat = CellDataFormatFlag.DateTime
+                    Sheet.Ranges(Cell.Address).Data = New DatePickerCell
+                    Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
+                Case 6 '"File Upload"
+                    isFile = True
+                    If ParentAd.Languages.ContainsKey(Head.Languages) Then
+                        Sheet.Ranges(Cell.Address).Data = NewCell
+                        Dim Border As New RangeBorderStyle
+                        Border.Color = Color.Red
+                        Border.Style = BorderLineStyle.Solid
+                        Sheet.SetRangeBorders(Cell.Address, BorderPositions.All, Border)
+                        AddHandler NewCell.Click, AddressOf GetFileName
+                        Sheet.Ranges(Cell.Address).Style.TextColor = Color.Red
+                        NewCell.ActivateColor = Color.DarkGoldenrod
+                        Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
+                    Else
+                        Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
+                        Sheet.Ranges(Cell.Address).Data = "--------------"
+                        Sheet.Ranges(Cell.Address).IsReadonly = True
+                    End If
+            End Select
+        End With
 
         'AddHandler Cell..CellKeyUp, AddressOf UpdateCell
 
     End Sub
 
-    Public Sub MediumChanged(sender As Object, e As EventArgs)
+    Public Sub DropDownChanged(sender As Object, e As EventArgs)
         If ParentAd.ParentListManager.isLoaded Then
             ParentAd.ParentListManager.hasChanges.Checked = True
         End If

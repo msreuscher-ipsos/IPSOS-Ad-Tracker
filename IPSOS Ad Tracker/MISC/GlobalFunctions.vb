@@ -51,7 +51,10 @@ Namespace Global.GlobalRefs
         Shared Sub StartExport(ByRef Study As Project)
 
             If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt") Then
-                My.Computer.FileSystem.RenameFile("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt", Study.SID & "_Version.txt." & Study.VersionMinor.Value)
+                Try
+                    My.Computer.FileSystem.RenameFile("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt", Study.SID & "_Version.txt." & Study.VersionMinor.Value)
+                Catch ex As Exception
+                End Try
             End If
             Study.VersionMinor.Value += 0.1
             CreateLocalProjectFolder(Study)
@@ -66,7 +69,16 @@ Namespace Global.GlobalRefs
             For Each Q As KeyValuePair(Of Integer, VariablePanel) In Study.Variables
                 QCnt += 1
                 With Study.Variables(Q.Key)
-                    StudySettings &= $"{QCnt},{ .txtName.Text},{ .allowChanges},{ .boxType.Text},{ .chkCultured.Checked};"
+                    If .PList.Punches.Count > 0 Then
+                        Dim PString As String = ""
+                        For Each P As KeyValuePair(Of Integer, Punch) In .PList.Punches
+                            PString &= $"|{ .PList.Punches(P.Key).txtValue.Text}:{ .PList.Punches(P.Key).txtLabel.Text}"
+                        Next
+                        PString = Mid(PString, 2)
+                        StudySettings &= $"{QCnt},{ .txtName.Text},{ .allowChanges},{ CType(.boxType.SelectedItem, DataType).Value},{ .chkCultured.Checked},{PString};"
+                    Else
+                        StudySettings &= $"{QCnt},{ .txtName.Text},{ .allowChanges},{ CType(.boxType.SelectedItem, DataType).Value},{ .chkCultured.Checked};"
+                    End If
                 End With
             Next
             StudySettings &= vbCrLf
@@ -101,7 +113,10 @@ Namespace Global.GlobalRefs
         Shared Sub StartPromotion(ByRef Study As Project)
 
             Dim PBar As New Progress
-            PBar.Location = New Point((Study.ParentManager.Width / 2) - (PBar.Width / 2), (Study.ParentManager.Height / 2) - (PBar.Height / 2))
+            PBar.StartPosition = FormStartPosition.Manual
+            PBar.Location = New Point(
+            Study.ParentManager.Location.X + (Study.ParentManager.Width - PBar.Width) \ 2,
+            Study.ParentManager.Location.Y + (Study.ParentManager.Height - PBar.Height) \ 2)
             PBar.Show()
             PBar.Add("Promoting to Production for " & Study.SID)
 
@@ -120,7 +135,7 @@ Namespace Global.GlobalRefs
             If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt") Then
                 Dim SplitMinor() As String = Split(My.Computer.FileSystem.ReadAllText("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt"), vbCrLf)
                 Dim ProductionFile As String = Study.UserName & vbCrLf &
-                                               "Staging: 0" & vbCrLf &
+                                               "Staging: "(Study.VersionMajor.Value + 1) & ".0" & vbCrLf &
                                                "Production: " & (Study.VersionMajor.Value + 1) & vbCrLf
                 For i = 3 To UBound(SplitMinor)
                     ProductionFile &= SplitMinor(i) & vbCrLf
@@ -169,7 +184,10 @@ Namespace Global.GlobalRefs
         Shared Sub StartUpload(ByRef Study As Project)
 
             Dim PBar As New Progress
-            PBar.Location = New Point((Study.ParentManager.Width / 2) - (PBar.Width / 2), (Study.ParentManager.Height / 2) - (PBar.Height / 2))
+            PBar.StartPosition = FormStartPosition.Manual
+            PBar.Location = New Point(
+            Study.ParentManager.Location.X + (Study.ParentManager.Width - PBar.Width) \ 2,
+            Study.ParentManager.Location.Y + (Study.ParentManager.Height - PBar.Height) \ 2)
             PBar.Show()
             PBar.Add("Loading to Staging for " & Study.SID)
 
@@ -188,7 +206,7 @@ Namespace Global.GlobalRefs
             SFTP.Sync(Study, New Progress, SynchronizationMode.Remote, "C:\Ad Loader\" & Study.SID, FTPDirectory)
 
             PBar.Close()
-
+            Study.hasChanges.Checked = False
         End Sub
 
         Shared Sub CreateLocalProjectFolder(ByRef Study As Project)
@@ -271,7 +289,10 @@ Namespace Global.GlobalRefs
             End With
 
             If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & Study.SID & "\Ads\" & _List.Name & "\" & _Language.Language & "\" & Study.SID & "_Staging.txt") Then
-                My.Computer.FileSystem.RenameFile("C:\Ad Loader\" & Study.SID & "\Ads\" & _List.Name & "\" & _Language.Language & "\" & Study.SID & "_Staging.txt", Study.SID & "_Staging.txt." & Study.VersionMinor.Value)
+                Try
+                    My.Computer.FileSystem.RenameFile("C:\Ad Loader\" & Study.SID & "\Ads\" & _List.Name & "\" & _Language.Language & "\" & Study.SID & "_Staging.txt", Study.SID & "_Staging.txt." & Study.VersionMinor.Value)
+                Catch ex As Exception
+                End Try
             End If
 
             My.Computer.FileSystem.WriteAllText("C:\Ad Loader\" & Study.SID & "\Ads\" & _List.Name & "\" & _Language.Language & "\" & Study.SID & "_Staging.txt", CultureSettings, False)

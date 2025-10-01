@@ -1,4 +1,5 @@
-﻿Imports System.Windows.Forms
+﻿Imports System.Runtime.CompilerServices
+Imports System.Windows.Forms
 
 Public Class VariableManager
 
@@ -16,14 +17,16 @@ Public Class VariableManager
 
     End Sub
 
-    Public Sub StartUp()
+    Public Sub StartUp(ByVal projectExists As Boolean)
 
-        With Parent.Variables
-            .Add(1, New VariablePanel(Parent, VariablePanel, 1, False, "Ad_Name", "Text", False))
-            .Add(2, New VariablePanel(Parent, VariablePanel, 2, False, "Medium", "Text", False))
-            .Add(3, New VariablePanel(Parent, VariablePanel, 3, False, "File_Name", "Text", True))
-        End With
-        Parent.CurrentIndex = 3
+        If projectExists = False Then
+            With Parent.Variables
+                .Add(1, New VariablePanel(Parent, VariablePanel, 1, True, "Ad_Name", 1, False))
+                .Add(2, New VariablePanel(Parent, VariablePanel, 2, True, "Medium", 2, False,, New Dictionary(Of Integer, Punch)))
+                .Add(3, New VariablePanel(Parent, VariablePanel, 3, True, "File_Name", 6, True))
+            End With
+            Parent.CurrentIndex = 3
+        End If
 
         NewPanel.Size = New Size(465, 50)
         With lblNew
@@ -47,7 +50,22 @@ Public Class VariableManager
                 Dim VariableInfo() As String = Split(Line, ",")
                 If Not Parent.Variables.ContainsKey(VariableInfo(0)) And
                    VariableInfo(0) <> 0 Then
-                    Parent.Variables.Add(VariableInfo(0), New VariablePanel(Parent, VariablePanel, VariableInfo(0), VariableInfo(2), VariableInfo(1), VariableInfo(3), VariableInfo(4)))
+                    If VariableInfo.Count > 5 Then
+                        Dim PSplit() As String = Split(VariableInfo(5), "|")
+                        Dim Punches As New Dictionary(Of Integer, Punch)
+                        For i As Integer = 0 To UBound(PSplit)
+                            Dim NewPunch As New Punch(Nothing, i + 1, Nothing)
+                            NewPunch.txtValue.Text = Split(PSplit(i), ":")(0)
+                            NewPunch.txtLabel.Text = Split(PSplit(i), ":")(1)
+                            Punches.Add(i + 1, NewPunch)
+                        Next
+                        Parent.Variables.Add(VariableInfo(0), New VariablePanel(Parent, VariablePanel, VariableInfo(0), VariableInfo(2), VariableInfo(1), VariableInfo(3), VariableInfo(4),, Punches))
+                    ElseIf VariableInfo(2) = "2" Then
+                        Dim Punches As New Dictionary(Of Integer, Punch)
+                        Parent.Variables.Add(VariableInfo(0), New VariablePanel(Parent, VariablePanel, VariableInfo(0), VariableInfo(2), VariableInfo(1), VariableInfo(3), VariableInfo(4),, Punches))
+                    Else
+                        Parent.Variables.Add(VariableInfo(0), New VariablePanel(Parent, VariablePanel, VariableInfo(0), VariableInfo(2), VariableInfo(1), VariableInfo(3), VariableInfo(4),,))
+                    End If
                 End If
             End If
         Next

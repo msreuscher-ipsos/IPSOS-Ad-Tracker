@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="IPSOS.png" />
+    <Content Include="MISC\IPSOS.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\..\Downloads\IPSOS.png">
+    <None Include="..\..\..\..\Downloads\IPSOS.png" Link="MISC\IPSOS.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

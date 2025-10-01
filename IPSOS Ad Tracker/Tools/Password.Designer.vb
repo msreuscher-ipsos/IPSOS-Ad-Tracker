@@ -57,6 +57,7 @@ Partial Class Password
         ' 
         ' Password
         ' 
+        AcceptButton = btnOkay
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(355, 131)

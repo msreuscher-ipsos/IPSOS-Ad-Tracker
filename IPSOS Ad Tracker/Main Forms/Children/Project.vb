@@ -47,8 +47,12 @@ Public Class Project
         ' This call is required by the designer.
         InitializeComponent()
         Me.MdiParent = _Parent
-        PBar.Location = New Point((_Parent.Width / 2) - (PBar.Width / 2), (_Parent.Height / 2) - (PBar.Height / 2))
+        PBar.StartPosition = FormStartPosition.Manual
+        PBar.Location = New Point(
+            _Parent.Location.X + (_Parent.Width - PBar.Width) \ 2,
+            _Parent.Location.Y + (_Parent.Height - PBar.Height) \ 2)
         PBar.Show()
+
 
         Login = _Login
 
@@ -81,7 +85,7 @@ Public Class Project
 
         Dim projectExists As Boolean = LoadFromStaging(Restarted)
 
-        VariableManager.StartUp()
+        VariableManager.StartUp(projectExists)
         If projectExists Then
 
             PBar.Add("Importing Version Data")

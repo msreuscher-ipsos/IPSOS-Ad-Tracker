@@ -49,7 +49,7 @@ Partial Class Progress
         Name = "Progress"
         ShowIcon = False
         ShowInTaskbar = False
-        StartPosition = FormStartPosition.Manual
+        StartPosition = FormStartPosition.CenterParent
         TopMost = True
         ResumeLayout(False)
     End Sub

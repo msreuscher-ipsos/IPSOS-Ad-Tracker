@@ -190,7 +190,7 @@ Partial Class LoginForm
         chkShowVariables.Location = New Point(258, 238)
         chkShowVariables.Name = "chkShowVariables"
         chkShowVariables.Size = New Size(272, 24)
-        chkShowVariables.TabIndex = 9
+        chkShowVariables.TabIndex = 10
         chkShowVariables.Text = "Update Variables (if Existing Project)"
         chkShowVariables.UseVisualStyleBackColor = True
         ' 
@@ -200,7 +200,7 @@ Partial Class LoginForm
         chkXML.Location = New Point(258, 208)
         chkXML.Name = "chkXML"
         chkXML.Size = New Size(382, 24)
-        chkXML.TabIndex = 10
+        chkXML.TabIndex = 9
         chkXML.Text = "Readin Existing XML File (required if no existing files)"
         chkXML.UseVisualStyleBackColor = True
         ' 

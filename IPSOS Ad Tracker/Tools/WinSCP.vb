@@ -23,7 +23,7 @@ Public Class SFTPWinSCP
                 .txtSID.Enabled = False
                 .txtUserName.Enabled = False
                 .txtPassword.Enabled = False
-                .ShowDialog()
+                .ShowDialog(Study.ParentManager)
             End With
         ElseIf InStr(ex.Message, "Authentication failed.") > 0 Then
             With Study.Login
@@ -34,7 +34,7 @@ Public Class SFTPWinSCP
                 .txtSID.Enabled = False
                 .txtUserName.Enabled = True
                 .txtPassword.Enabled = True
-                .ShowDialog()
+                .ShowDialog(Study.ParentManager)
             End With
         Else
             With Study.Login
@@ -45,7 +45,7 @@ Public Class SFTPWinSCP
                 .txtSID.Enabled = False
                 .txtUserName.Enabled = True
                 .txtPassword.Enabled = True
-                .ShowDialog()
+                .ShowDialog(Study.ParentManager)
             End With
         End If
 

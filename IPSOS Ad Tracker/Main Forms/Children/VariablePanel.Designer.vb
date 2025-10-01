@@ -66,7 +66,6 @@ Partial Class VariablePanel
         ' boxType
         ' 
         boxType.FormattingEnabled = True
-        boxType.Items.AddRange(New Object() {"Text", "Number", "Yes/No", "Date/Time"})
         boxType.Location = New Point(214, 10)
         boxType.Name = "boxType"
         boxType.Size = New Size(151, 28)
