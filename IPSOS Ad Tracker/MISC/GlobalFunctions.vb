@@ -56,12 +56,15 @@ Namespace Global.GlobalRefs
                 Catch ex As Exception
                 End Try
             End If
+
             Study.VersionMinor.Value += 0.1
             CreateLocalProjectFolder(Study)
+
             Dim StudySettings As String = ""
             StudySettings &= "User: " & Study.UserName & vbCrLf
             StudySettings &= "Staging: " & Study.VersionMinor.Value & vbCrLf
             StudySettings &= "Production: " & Study.VersionMajor.Value & vbCrLf
+            StudySettings &= "Max:" & Study.MaximumCategories & vbCrLf
             StudySettings &= "Variables: "
 
             Dim QCnt As Integer = 0

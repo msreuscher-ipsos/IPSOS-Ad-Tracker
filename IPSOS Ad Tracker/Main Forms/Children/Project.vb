@@ -3,6 +3,7 @@ Imports GlobalRefs.GlobalFunctions
 Imports GlobalRefs.Export
 Imports Microsoft.VisualBasic.FileIO
 Imports WinSCP
+Imports Microsoft.Win32.SafeHandles
 
 Public Class Project
 
@@ -33,6 +34,8 @@ Public Class Project
 
     Dim PBar As New Progress
 
+
+    Public MaximumCategories As Integer = 1000
     Public WithEvents hasChanges As New System.Windows.Forms.CheckBox
     Public WithEvents readyForProduction As New System.Windows.Forms.CheckBox
     Dim UserMsg As New UserMessage
@@ -47,6 +50,7 @@ Public Class Project
         ' This call is required by the designer.
         InitializeComponent()
         Me.MdiParent = _Parent
+
         PBar.StartPosition = FormStartPosition.Manual
         PBar.Location = New Point(
             _Parent.Location.X + (_Parent.Width - PBar.Width) \ 2,
@@ -106,11 +110,16 @@ Public Class Project
                         ProjInfo.Lists = Split(Trim(Value), ",")
                     Case "exclude"
                         ProjInfo.Excludes = Split(Trim(Value), ",")
+                    Case "max"
+                        ProjInfo.Max = Trim(Value)
                 End Select
             Next
 
             VersionMinor.Value = ProjInfo.Staging
             VersionMajor.Value = ProjInfo.Production
+            If ProjInfo.Max <> "" Then
+                MaximumCategories = ProjInfo.Max
+            End If
             VariableManager.ReadinCustomVariables(ProjInfo.Variables)
 
             If _Login.chkShowVariables.Checked = True Then
@@ -272,8 +281,36 @@ Public Class Project
             readyForProduction.Checked = True
         End If
 
-        MainPanel.SplitterDistance = ListStrip.Width
+        'MainPanel.SplitterDistance = ListStrip.Width
         Me.WindowState = FormWindowState.Maximized
+
+        For Each L As KeyValuePair(Of String, ListManager) In Lists
+            PBar.Add($"Validating List: {Lists(L.Key).lblTitle.Text}")
+            Dim CleanLists As Boolean = True
+            Dim BadListMessage As String = ""
+            For Each A As KeyValuePair(Of String, Ad) In Lists(L.Key).Ads
+                Dim CurrentValues As String = Lists(L.Key).Ads(A.Key).Value
+                If Mid(CurrentValues, 1, 1) <> "_" Then
+                    CleanLists = False
+                    BadListMessage &= $"Value {CurrentValues} is invalid. All values must lead with an underscore.{vbCrLf}{vbCrLf}"
+                ElseIf Val(Mid(CurrentValues, 2)) > MaximumCategories Then
+                    CleanLists = False
+                    BadListMessage = $"Value {CurrentValues} is invalid. Please note that the current maximum number of categories currently built into the survey (MDD) is {MaximumCategories} and at least one punch exceeds that value. In order avoid errors, the current survey must be updated before continuing.{vbCrLf}{vbCrLf}"
+                Else
+                    For i As Integer = 2 To Len(CurrentValues)
+                        If Not Mid(CurrentValues, i, 1) Like "[0-9]" Then
+                            CleanLists = False
+                            BadListMessage = $"{CurrentValues} is invalid. All values must be a numeric value.{vbCrLf}{vbCrLf}"
+                            Exit For
+                        End If
+                    Next
+                End If
+            Next
+            If CleanLists = False Then
+                Lists(L.Key).InvalidateList(BadListMessage)
+            End If
+        Next
+
 
         PBar.Close()
 
@@ -283,7 +320,9 @@ Public Class Project
             UserMsg.BringToFront()
             hasChanges.Checked = True
         End If
+
         Me.Show()
+        Me.WindowState = FormWindowState.Maximized
 
     End Sub
 
@@ -438,5 +477,6 @@ Public Class ProjectInfo
     Public Variables() As String = Split("", vbCrLf)
     Public Lists() As String = Split("", vbCrLf)
     Public Excludes() As String = Split("", vbCrLf)
+    Public Max As String
 End Class
 

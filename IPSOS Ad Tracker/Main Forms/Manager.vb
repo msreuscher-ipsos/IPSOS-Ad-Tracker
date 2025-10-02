@@ -3,8 +3,8 @@ Imports System.IO
 Imports System.Resources
 Imports System.Windows.Forms
 Imports System.Xml.Serialization
+Imports ExportToDIM
 Imports GlobalRefs.Export
-Imports ExportToDim
 Public Class Manager
 
     Dim UserName As String = ""
@@ -12,6 +12,22 @@ Public Class Manager
 
     Public Projects As Project
     Public ActiveProject As String
+
+    Public Restarted As Boolean = False
+    Public RestartInfo As Restart
+    Public IntroReturn As Intro.IntroReturn
+
+    Public Sub New(ByVal _Restarted As Boolean, ByVal _RestartInfo As Restart, ByVal _IntroReturn As Intro.IntroReturn)
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        Restarted = _Restarted
+        RestartInfo = _RestartInfo
+        IntroReturn = _IntroReturn
+
+    End Sub
 
     Private Sub ExitToolsStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles ExitToolStripMenuItem.Click
         Me.Close()
@@ -25,18 +41,10 @@ Public Class Manager
         StartPromotion(Projects)
     End Sub
 
-    Public Restarted As Boolean = False
-    Public RestartInfo As Restart
     Private Sub Manager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If My.Computer.FileSystem.FileExists("C:\Ad Loader\Restart.resx") Then
-            Dim mySerializer As New XmlSerializer(GetType(Restart))
-            Using myFileStream As New FileStream("C:\Ad Loader\Restart.resx", FileMode.Open)
-                RestartInfo = CType(mySerializer.Deserialize(myFileStream), Restart)
-            End Using
-            Restarted = True
-            My.Computer.FileSystem.DeleteFile("C:\Ad Loader\Restart.resx", FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently)
-        End If
+
         Timer.Start()
+
     End Sub
 
     Private Sub Timer_Tick(sender As Object, e As EventArgs) Handles Timer.Tick
@@ -68,6 +76,13 @@ Public Class Manager
             Login.txtPassword.Text = _Password.txtPassword.Text
             Login.DialogResult = DialogResult.OK
         Else
+            If IntroReturn = Intro.IntroReturn.NewFile Then
+                Login.chkXML.Checked = True
+                Login.chkXML.Enabled = False
+                Login.chkShowVariables.Checked = True
+                Login.chkShowVariables.Enabled = False
+                Login.chkCleanLocal.Enabled = False
+            End If
             Login.ShowDialog()
         End If
         OpenFileDialog.RestoreDirectory = True
@@ -151,14 +166,14 @@ Public Class Manager
                     Case True
                         If Not Projects.Lists.ContainsKey(List.Key) Then
                             Projects.Lists.Add(List.Key, Projects.ExcludeLists(List.Key))
-                            Projects.ListStrip.Items.Add(Projects.Lists(List.Key).Tool)
+                            Projects.FlowLayout.Controls.Add(Projects.Lists(List.Key).Tool)
                             Projects.ListPanel.Controls.Add(Projects.Lists(List.Key))
                             Projects.ExcludeLists.Remove(List.Key)
                         End If
                     Case False
                         If Not Projects.ExcludeLists.ContainsKey(List.Key) Then
                             Projects.ExcludeLists.Add(List.Key, Projects.Lists(List.Key))
-                            Projects.ListStrip.Items.Remove(Projects.Lists(List.Key).Tool)
+                            Projects.FlowLayout.Controls.Remove(Projects.Lists(List.Key).Tool)
                             Projects.ListPanel.Controls.Remove(Projects.Lists(List.Key))
                             Projects.Lists.Remove(List.Key)
                         End If
@@ -187,6 +202,15 @@ Public Class Manager
         End If
     End Sub
 
+    Private Sub SetMaxCategoriesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SetMaxCategoriesToolStripMenuItem.Click
+        Dim SetMax As New MaxCategories
+        SetMax.numMax.Value = Projects.MaximumCategories
+        SetMax.ShowDialog()
+
+        If SetMax.DialogResult = DialogResult.OK Then
+            Projects.MaximumCategories = SetMax.numMax.Value
+        End If
+    End Sub
 End Class
 
 <Serializable()> Public Class Instance

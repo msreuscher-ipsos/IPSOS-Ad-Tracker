@@ -34,6 +34,7 @@ Partial Class Manager
         ToolStripSeparator4 = New ToolStripSeparator()
         ExitToolStripMenuItem = New ToolStripMenuItem()
         ToolsMenu = New ToolStripMenuItem()
+        SetMaxCategoriesToolStripMenuItem = New ToolStripMenuItem()
         RestoreToolStripMenuItem = New ToolStripMenuItem()
         RestoreFromBackupToolStripMenuItem = New ToolStripMenuItem()
         HelpMenu = New ToolStripMenuItem()
@@ -113,10 +114,17 @@ Partial Class Manager
         ' 
         ' ToolsMenu
         ' 
-        ToolsMenu.DropDownItems.AddRange(New ToolStripItem() {RestoreToolStripMenuItem, RestoreFromBackupToolStripMenuItem})
+        ToolsMenu.DropDownItems.AddRange(New ToolStripItem() {SetMaxCategoriesToolStripMenuItem, RestoreToolStripMenuItem, RestoreFromBackupToolStripMenuItem})
         ToolsMenu.Name = "ToolsMenu"
         ToolsMenu.Size = New Size(58, 24)
         ToolsMenu.Text = "&Tools"
+        ' 
+        ' SetMaxCategoriesToolStripMenuItem
+        ' 
+        SetMaxCategoriesToolStripMenuItem.Name = "SetMaxCategoriesToolStripMenuItem"
+        SetMaxCategoriesToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.M
+        SetMaxCategoriesToolStripMenuItem.Size = New Size(281, 26)
+        SetMaxCategoriesToolStripMenuItem.Text = "Set &Max Categories"
         ' 
         ' RestoreToolStripMenuItem
         ' 
@@ -194,7 +202,7 @@ Partial Class Manager
         ' 
         ' Manager
         ' 
-        AutoScaleDimensions = New SizeF(8.0F, 20.0F)
+        AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1482, 728)
         Controls.Add(ToolStrip)
@@ -204,7 +212,6 @@ Partial Class Manager
         MainMenuStrip = MenuStrip
         Margin = New Padding(4, 5, 4, 5)
         Name = "Manager"
-        ShowIcon = False
         Text = "IPSOS Ad Tracker"
         MenuStrip.ResumeLayout(False)
         MenuStrip.PerformLayout()
@@ -234,5 +241,6 @@ Partial Class Manager
     Friend WithEvents RestoreFromBackupToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExportDIMRoutingToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SaveFile As SaveFileDialog
+    Friend WithEvents SetMaxCategoriesToolStripMenuItem As ToolStripMenuItem
 
 End Class

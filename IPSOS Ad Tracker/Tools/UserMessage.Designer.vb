@@ -25,12 +25,14 @@ Partial Class UserMessage
         Panel1 = New Panel()
         lblMessage = New Label()
         btnOK = New Button()
+        txtError = New RichTextBox()
         Panel1.SuspendLayout()
         SuspendLayout()
         ' 
         ' Panel1
         ' 
         Panel1.BackColor = SystemColors.Control
+        Panel1.Controls.Add(txtError)
         Panel1.Controls.Add(lblMessage)
         Panel1.Controls.Add(btnOK)
         Panel1.Dock = DockStyle.Fill
@@ -58,6 +60,17 @@ Partial Class UserMessage
         btnOK.Text = "OK"
         btnOK.UseVisualStyleBackColor = True
         ' 
+        ' txtError
+        ' 
+        txtError.BorderStyle = BorderStyle.None
+        txtError.Location = New Point(8, 3)
+        txtError.Name = "txtError"
+        txtError.ReadOnly = True
+        txtError.Size = New Size(367, 140)
+        txtError.TabIndex = 2
+        txtError.Text = ""
+        txtError.Visible = False
+        ' 
         ' UserMessage
         ' 
         AutoScaleDimensions = New SizeF(8F, 20F)
@@ -76,5 +89,6 @@ Partial Class UserMessage
     Friend WithEvents Panel1 As Panel
     Friend WithEvents lblMessage As Label
     Friend WithEvents btnOK As Button
+    Friend WithEvents txtError As RichTextBox
 
 End Class

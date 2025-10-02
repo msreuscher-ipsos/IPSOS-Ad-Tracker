@@ -4,30 +4,26 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>IPSOS_Ad_Tracker</RootNamespace>
-    <StartupObject>Sub Main</StartupObject>
+    <StartupObject>IPSOS_Ad_Tracker.My.MyApplication</StartupObject>
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
     <Company>IPSOS NA</Company>
     <Copyright>2025</Copyright>
     <Description>Product Tracker for Ads.</Description>
     <PackageIcon>IPSOS.png</PackageIcon>
+    <ApplicationIcon>MISC\IPSOS_AT.ico</ApplicationIcon>
+    <NuGetAuditLevel>low</NuGetAuditLevel>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="MISC\IPSOS.png" />
+    <Content Include="MISC\IPSOS_AT.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <Import Include="System.Data" />
     <Import Include="System.Drawing" />
     <Import Include="System.Windows.Forms" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\..\..\Downloads\IPSOS.png" Link="MISC\IPSOS.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -62,6 +58,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="MISC\IPSOS.png" Link="MISC\IPSOS.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Update="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

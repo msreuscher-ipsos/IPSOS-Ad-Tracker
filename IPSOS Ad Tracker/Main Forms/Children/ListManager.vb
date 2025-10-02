@@ -10,8 +10,7 @@ Public Class ListManager
 
     Public ParentProject As Project
 
-    WithEvents Exclude As New ToolStripMenuItem()
-    Public WithEvents Tool As New ToolStripSplitButton()
+    Public WithEvents Tool As New ListSelector
 
     Public Ads As New Dictionary(Of String, Ad)
     Public Variables As New Dictionary(Of Integer, VariablePanel)
@@ -42,20 +41,11 @@ Public Class ListManager
 
         Variables = _Variables
 
-        With Tool
-            .Text = Name
-            .AutoSize = True
-            .DisplayStyle = ToolStripItemDisplayStyle.Text
-            .DropDownItems.Add(Exclude)
-        End With
+        Tool.ParentList = Me
+        Tool.btnTool.Text = Name
+        Tool.RemoveToolStripMenuItem.Text &= " " & Name
 
-        With Exclude
-            .Text = "Exclude"
-            .AutoSize = True
-            .DisplayStyle = ToolStripItemDisplayStyle.Text
-        End With
-
-        ParentProject.ListStrip.Items.Add(Tool)
+        ParentProject.FlowLayout.Controls.Add(Tool)
         ParentProject.ListPanel.Controls.Add(Me)
         Me.Dock = DockStyle.Fill
 
@@ -146,18 +136,6 @@ Public Class ListManager
         End If
     End Sub
 
-    Private Sub Tool_Click(ByVal sender As Object, ByVal e As EventArgs) Handles Tool.Click
-        Me.Visible = True
-        Me.BringToFront()
-    End Sub
-
-    Private Sub ExcludeTool_Click(ByVal sender As Object, ByVal e As EventArgs) Handles Exclude.Click
-        ParentProject.ExcludeLists.Add(Me.Name, Me)
-        ParentProject.Lists.Remove(Me.Name)
-        ParentProject.ListStrip.Items.Remove(Tool)
-        ParentProject.ListPanel.Controls.Remove(Me)
-    End Sub
-
     Private Sub hasChanges_Click(ByVal sender As Object, ByVal e As EventArgs) Handles hasChanges.CheckedChanged
         If isLoaded Then
             Select Case hasChanges.Checked
@@ -191,6 +169,24 @@ Public Class ListManager
     Public Sub hasChanged(ByVal Value As Boolean)
         btnStaging.Enabled = Value
         ParentProject.hasChanges.Checked = Value
+    End Sub
+
+    Dim UserMsg As New UserMessage
+    Public Sub InvalidateList(ByVal ErrorMessage As String)
+
+        UserMsg.lblMessage.Visible = False
+        UserMsg.txtError.Text = ErrorMessage
+        UserMsg.txtError.Visible = True
+        UserMsg.txtError.BringToFront()
+
+        UserMsg.Location = New Point(
+             (ParentProject.Width - UserMsg.Width) \ 2,
+            (ParentProject.Height - UserMsg.Height) \ 2)
+
+        Me.Controls.Add(UserMsg)
+        UserMsg.BringToFront()
+        Tool.Border.BackColor = Color.Red
+
     End Sub
 
 End Class

@@ -23,8 +23,8 @@ Partial Class Project
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         MainPanel = New SplitContainer()
-        ListStrip = New ToolStrip()
         MainSplit = New SplitContainer()
+        FlowLayout = New FlowLayoutPanel()
         ListPanel = New Panel()
         CType(MainPanel, ComponentModel.ISupportInitialize).BeginInit()
         MainPanel.SuspendLayout()
@@ -45,18 +45,6 @@ Partial Class Project
         MainPanel.SplitterDistance = 179
         MainPanel.TabIndex = 0
         ' 
-        ' ListStrip
-        ' 
-        ListStrip.AllowMerge = False
-        ListStrip.Dock = DockStyle.Fill
-        ListStrip.GripStyle = ToolStripGripStyle.Hidden
-        ListStrip.ImageScalingSize = New Size(20, 20)
-        ListStrip.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow
-        ListStrip.Location = New Point(0, 0)
-        ListStrip.Name = "ListStrip"
-        ListStrip.Size = New Size(283, 504)
-        ListStrip.TabIndex = 0
-        ' 
         ' MainSplit
         ' 
         MainSplit.Dock = DockStyle.Fill
@@ -67,7 +55,7 @@ Partial Class Project
         ' 
         ' MainSplit.Panel1
         ' 
-        MainSplit.Panel1.Controls.Add(ListStrip)
+        MainSplit.Panel1.Controls.Add(FlowLayout)
         ' 
         ' MainSplit.Panel2
         ' 
@@ -75,6 +63,17 @@ Partial Class Project
         MainSplit.Size = New Size(850, 504)
         MainSplit.SplitterDistance = 283
         MainSplit.TabIndex = 0
+        ' 
+        ' FlowLayout
+        ' 
+        FlowLayout.AutoScroll = True
+        FlowLayout.Dock = DockStyle.Fill
+        FlowLayout.FlowDirection = FlowDirection.TopDown
+        FlowLayout.Location = New Point(0, 0)
+        FlowLayout.Name = "FlowLayout"
+        FlowLayout.Size = New Size(283, 504)
+        FlowLayout.TabIndex = 0
+        FlowLayout.WrapContents = False
         ' 
         ' ListPanel
         ' 
@@ -96,20 +95,18 @@ Partial Class Project
         Name = "Project"
         ShowIcon = False
         ShowInTaskbar = False
+        StartPosition = FormStartPosition.Manual
         Text = "Project"
-        WindowState = FormWindowState.Maximized
         CType(MainPanel, ComponentModel.ISupportInitialize).EndInit()
         MainPanel.ResumeLayout(False)
         MainSplit.Panel1.ResumeLayout(False)
-        MainSplit.Panel1.PerformLayout()
         MainSplit.Panel2.ResumeLayout(False)
         CType(MainSplit, ComponentModel.ISupportInitialize).EndInit()
         MainSplit.ResumeLayout(False)
         ResumeLayout(False)
     End Sub
-
-    Friend WithEvents ListStrip As ToolStrip
     Friend WithEvents MainPanel As SplitContainer
     Friend WithEvents MainSplit As SplitContainer
     Friend WithEvents ListPanel As Panel
+    Friend WithEvents FlowLayout As FlowLayoutPanel
 End Class
