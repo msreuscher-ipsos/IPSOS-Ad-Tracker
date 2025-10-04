@@ -40,8 +40,6 @@ Public Class VariableManager
 
     End Sub
 
-    Private Sub VariableManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-    End Sub
 
     Public Sub ReadinCustomVariables(ByVal CustomVariables() As String)
 
@@ -76,7 +74,7 @@ Public Class VariableManager
         Me.ResumeLayout()
         Parent.CurrentIndex += 1
         VariablePanel.Controls.Remove(NewPanel)
-        Parent.Variables.Add(Parent.CurrentIndex, New VariablePanel(Parent, VariablePanel, Parent.CurrentIndex, True, "", "", True))
+        Parent.Variables.Add(Parent.CurrentIndex, New VariablePanel(Parent, VariablePanel, Parent.CurrentIndex, True, "", 1, False))
         VariablePanel.Controls.Add(NewPanel)
         Me.SuspendLayout()
     End Sub

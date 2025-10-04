@@ -77,6 +77,7 @@ Public Class Cell
 
     Public isFile As Boolean = False
     Public isMedium As Boolean = False
+    Public isDrop As Boolean = False
 
     WithEvents dropdown As New DropdownListCell()
     Sub New(ByRef _Parent As Ad,
@@ -114,6 +115,7 @@ Public Class Cell
                 Case 2 '"Punch/Categorical"
                     If .txtName.Text = "Medium" Then isMedium = True
                     If .PList.Punches.Count > 0 Then
+                        isDrop = True
                         For Each P As KeyValuePair(Of Integer, Punch) In .PList.Punches
                             dropdown.Items.Add(.PList.Punches(P.Key))
                         Next

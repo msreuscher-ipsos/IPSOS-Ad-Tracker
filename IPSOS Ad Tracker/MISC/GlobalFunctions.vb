@@ -50,6 +50,10 @@ Namespace Global.GlobalRefs
 
         Shared Sub StartExport(ByRef Study As Project)
 
+            Dim localDateTime As DateTime = DateTime.Now ' Get current local time
+            Dim convertedUtcDateTime As DateTime = localDateTime.ToUniversalTime()
+            Study.LoadDate = convertedUtcDateTime
+
             If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt") Then
                 Try
                     My.Computer.FileSystem.RenameFile("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt", Study.SID & "_Version.txt." & Study.VersionMinor.Value)
@@ -115,6 +119,10 @@ Namespace Global.GlobalRefs
 
         Shared Sub StartPromotion(ByRef Study As Project)
 
+            Dim localDateTime As DateTime = DateTime.Now ' Get current local time
+            Dim convertedUtcDateTime As DateTime = localDateTime.ToUniversalTime()
+            Study.LoadDate = convertedUtcDateTime
+
             Dim PBar As New Progress
             PBar.StartPosition = FormStartPosition.Manual
             PBar.Location = New Point(
@@ -154,6 +162,7 @@ Namespace Global.GlobalRefs
                                 SplitMinor = Split(My.Computer.FileSystem.ReadAllText(FileDir & Study.SID & "_Staging.txt"), vbCrLf)
                                 ProductionFile = (Study.VersionMajor.Value + 1) & ".0" & vbCrLf &
                                                  Study.UserName & "," &
+                                                 Study.LoadDate & "," &
                                                 .lblTitle.Text & "," &
                                                 .Languages(Lang.Key).Country.Code & ":" & .Languages(Lang.Key).Country.Name & "," &
                                                 .Languages(Lang.Key).Language & vbCrLf
@@ -179,8 +188,6 @@ Namespace Global.GlobalRefs
             SFTP.Sync(Study, New Progress, SynchronizationMode.Remote, "C:\Ad Loader\" & Study.SID, FTPDirectory)
 
             PBar.Close()
-
-
 
         End Sub
 
@@ -242,6 +249,7 @@ Namespace Global.GlobalRefs
 
             Dim CultureSettings As String = Study.VersionMinor.Value & vbCrLf &
                                             Study.UserName & "," &
+                                            Study.LoadDate & "," &
                                             _List.lblTitle.Text & "," &
                                             _Language.Country.Code & ":" & _Language.Country.Name & "," &
                                             _Language.Language & vbCrLf
@@ -269,22 +277,35 @@ Namespace Global.GlobalRefs
                                 If .Ads(A.Key).include Then
                                     CultureSettings &= .Ads(A.Key).Cells(.Headers(H.Key).Index).Files.GetFiles & vbTab
                                 End If
-                            ElseIf .Ads(A.Key).Cells(.Headers(H.Key).Index).isMedium Then
-                                If .Ads(A.Key).include Then
-                                    Dim Names As Array = System.Enum.GetNames(GetType(MediaType))
-                                    Dim Values As Array = System.Enum.GetValues(GetType(MediaType))
-                                    For i As Integer = 0 To UBound(Values)
-                                        If .Ads(A.Key).Cells(.Headers(H.Key).Index).Cell.Data = Names(i) Then
-                                            CultureSettings &= Values(i) & vbTab
-                                            Exit For
-                                        End If
-                                    Next
-                                End If
+                                'lseIf .Ads(A.Key).Cells(.Headers(H.Key).Index).isMedium Then
+                                '   If .Ads(A.Key).include Then
+                                '       Dim Names As Array = System.Enum.GetNames(GetType(MediaType))
+                                '       Dim Values As Array = System.Enum.GetValues(GetType(MediaType))
+                                '       For i As Integer = 0 To UBound(Values)
+                                '           MsgBox(.Ads(A.Key).Cells(.Headers(H.Key).Index).Cell.Data)
+                                '           If .Ads(A.Key).Cells(.Headers(H.Key).Index).Cell.Data = Names(i) Then
+                                '               CultureSettings &= Values(i) & vbTab
+                                '               Exit For
+                                '           End If
+                                '       Next
+                                '   End If
                             Else
                                 If .Ads(A.Key).include Then
-                                    CultureSettings &= .Ads(A.Key).Cells(.Headers(H.Key).Index).Cell.Data & vbTab
+                                    If .Ads(A.Key).Cells(.Headers(H.Key).Index).isDrop Then
+                                        If Not .Ads(A.Key).Cells(.Headers(H.Key).Index).Cell.Data Is Nothing Then
+                                            If .Ads(A.Key).Cells(.Headers(H.Key).Index).Cell.Data.ToString <> "" Then
+                                                CultureSettings &= CType(.Ads(A.Key).Cells(.Headers(H.Key).Index).Cell.Data, Punch).txtValue.Text & vbTab
+                                            Else
+                                                CultureSettings &= vbTab
+                                            End If
+                                        Else
+                                            CultureSettings &= vbTab
+                                        End If
+                                    Else
+                                        CultureSettings &= .Ads(A.Key).Cells(.Headers(H.Key).Index).Cell.Data & vbTab
+                                        End If
+                                    End If
                                 End If
-                            End If
                         End If
                     Next
                     CultureSettings &= vbCrLf

@@ -1,9 +1,10 @@
 ﻿Imports System.Xml
-Imports GlobalRefs.GlobalFunctions
 Imports GlobalRefs.Export
+Imports GlobalRefs.GlobalFunctions
+Imports IPSOS_Ad_Tracker.Intro
 Imports Microsoft.VisualBasic.FileIO
-Imports WinSCP
 Imports Microsoft.Win32.SafeHandles
+Imports WinSCP
 
 Public Class Project
 
@@ -28,6 +29,8 @@ Public Class Project
 
     Public WithEvents VersionMajor As New NumericUpDown
     Public WithEvents VersionMinor As New NumericUpDown
+
+    Public LoadDate As String = ""
 
     Dim ProjInfo As New ProjectInfo
     Public Login As LoginForm
@@ -95,24 +98,26 @@ Public Class Project
             PBar.Add("Importing Version Data")
             Dim SW() As String = Split(My.Computer.FileSystem.ReadAllText($"C:\Ad Loader\{SID}\Ads\{SID}_Version.txt"), vbCrLf)
             For Each line As String In SW
-                Dim Tag As String = LCase(Trim(Mid(line, 1, line.IndexOf(":"))))
-                Dim Value As String = Mid(line, line.IndexOf(":") + 2)
-                Select Case Tag
-                    Case "user"
-                        ProjInfo.User = Trim(Value)
-                    Case "staging"
-                        ProjInfo.Staging = Trim(Value)
-                    Case "production"
-                        ProjInfo.Production = Trim(Value)
-                    Case "variables"
-                        ProjInfo.Variables = Split(Trim(Value), ";")
-                    Case "lists"
-                        ProjInfo.Lists = Split(Trim(Value), ",")
-                    Case "exclude"
-                        ProjInfo.Excludes = Split(Trim(Value), ",")
-                    Case "max"
-                        ProjInfo.Max = Trim(Value)
-                End Select
+                If line <> "" Then
+                    Dim Tag As String = LCase(Trim(Mid(line, 1, line.IndexOf(":"))))
+                    Dim Value As String = Mid(line, line.IndexOf(":") + 2)
+                    Select Case Tag
+                        Case "user"
+                            ProjInfo.User = Trim(Value)
+                        Case "staging"
+                            ProjInfo.Staging = Trim(Value)
+                        Case "production"
+                            ProjInfo.Production = Trim(Value)
+                        Case "variables"
+                            ProjInfo.Variables = Split(Trim(Value), ";")
+                        Case "lists"
+                            ProjInfo.Lists = Split(Trim(Value), ",")
+                        Case "exclude"
+                            ProjInfo.Excludes = Split(Trim(Value), ",")
+                        Case "max"
+                            ProjInfo.Max = Trim(Value)
+                    End Select
+                End If
             Next
 
             VersionMinor.Value = ProjInfo.Staging
@@ -254,21 +259,25 @@ Public Class Project
                             If Lists(Trim(line)).Ads.ContainsKey(Punch) Then
                                 For j As Integer = 0 To UBound(LatestHeaderList)
                                     If LatestCulturedList(j) = False And
-                                           LatestHeaderList(j) <> "Punch" And
-                                           Trim(LatestHeaderList(j)) <> "" Then
-                                        Dim HeaderIndex As String = Variables(VariableNames(LatestHeaderList(j))).txtName.Text
-                                        Dim CellKey As String = Lists(Trim(line)).Headers(HeaderIndex).Index
-                                        If LatestHeaderList(j) <> "Medium" Then
-                                            Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Record(j)
-                                        Else
-                                            Dim Names As Array = System.Enum.GetNames(GetType(MediaType))
-                                            Dim Values As Array = System.Enum.GetValues(GetType(MediaType))
-                                            For k As Integer = 0 To UBound(Values)
-                                                If Record(j) = Values(k) Then
-                                                    Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Names(k)
-                                                    Exit For
+                                       LatestHeaderList(j) <> "Punch" And
+                                       Trim(LatestHeaderList(j)) <> "" Then
+                                        If VariableNames.ContainsKey(LatestHeaderList(j)) Then
+                                            Dim HeaderIndex As String = Variables(VariableNames(LatestHeaderList(j))).txtName.Text
+                                            Dim CellKey As String = Lists(Trim(line)).Headers(HeaderIndex).Index
+                                            If LatestHeaderList(j) <> "Medium" Then
+                                                Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Record(j)
+                                            Else
+                                                Dim Names As Array = System.Enum.GetNames(GetType(MediaType))
+                                                Dim Values As Array = System.Enum.GetValues(GetType(MediaType))
+                                                If Record(j) <> "" Then
+                                                    For k As Integer = 0 To UBound(Values)
+                                                        If Record(j) = Values(k) Then
+                                                            Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Names(k)
+                                                            Exit For
+                                                        End If
+                                                    Next
                                                 End If
-                                            Next
+                                            End If
                                         End If
                                     End If
                                 Next
@@ -321,6 +330,10 @@ Public Class Project
             hasChanges.Checked = True
         End If
 
+        If ParentManager.IntroReturn = IntroReturn.NewFile Then
+            hasChanges.Checked = True
+        End If
+
         Me.Show()
         Me.WindowState = FormWindowState.Maximized
 
@@ -337,10 +350,10 @@ Public Class Project
                     Dim LangName As String = Replace(Replace(LangDir, Line, ""), "\", "")
                     Dim FileLines() As String = Split(My.Computer.FileSystem.ReadAllText(LangDir & "\" & SID & "_Staging.txt"), vbCrLf)
                     Dim SystemValues() As String = Split(FileLines(1), ",")
-                    Dim CountryValues() As String = Split(SystemValues(2), ":")
-                    NewList.lblTitle.Text = SystemValues(1)
+                    Dim CountryValues() As String = Split(SystemValues(3), ":")
+                    NewList.lblTitle.Text = SystemValues(2)
                     Dim NewCountry As New Country(CountryValues(1), CountryValues(0))
-                    NewCountry.Languages.Add(SystemValues(3), SystemValues(3))
+                    NewCountry.Languages.Add(SystemValues(4), SystemValues(4))
                     Dim NewCountryDict As New Dictionary(Of String, Country)
                     NewCountryDict.Add(NewCountry.Code, NewCountry)
                     Dim Headers() As String = Split(FileLines(2))
@@ -354,12 +367,12 @@ Public Class Project
                             NewAd = NewList.Ads(Values(0))
                         End If
                         If NewAd.Countries.ContainsKey(NewCountry.Code) Then
-                            If Not NewAd.Countries(NewCountry.Code).Languages.ContainsKey(SystemValues(3)) Then
-                                NewAd.Countries(NewCountry.Code).Languages.Add(SystemValues(3), SystemValues(3))
+                            If Not NewAd.Countries(NewCountry.Code).Languages.ContainsKey(SystemValues(4)) Then
+                                NewAd.Countries(NewCountry.Code).Languages.Add(SystemValues(4), SystemValues(4))
                             End If
                         Else
                             NewAd.Countries.Add(NewCountry.Code, NewCountry)
-                            NewAd.Countries(NewCountry.Code).Languages.Add(SystemValues(3), SystemValues(3))
+                            NewAd.Countries(NewCountry.Code).Languages.Add(SystemValues(4), SystemValues(4))
                         End If
                     Next
                 Next

@@ -125,7 +125,6 @@ Partial Class VariableManager
         AutoScaleMode = AutoScaleMode.Font
         CancelButton = Cancel_Button
         ClientSize = New Size(603, 629)
-        ControlBox = False
         Controls.Add(Panel1)
         Controls.Add(VariablePanel)
         Controls.Add(TableLayoutPanel1)
@@ -136,7 +135,7 @@ Partial Class VariableManager
         Name = "VariableManager"
         ShowIcon = False
         ShowInTaskbar = False
-        StartPosition = FormStartPosition.CenterParent
+        StartPosition = FormStartPosition.CenterScreen
         TopMost = True
         Panel1.ResumeLayout(False)
         Panel1.PerformLayout()

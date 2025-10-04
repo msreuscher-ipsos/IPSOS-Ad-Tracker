@@ -19,7 +19,8 @@ Public Class Intro
 
     End Sub
 
-    Private Sub Intro_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+    Private Sub Intro_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
+        Me.Visible = False
         Dim Manager As New Manager(Restarted, RestartInfo, Intro)
         Manager.Show()
     End Sub

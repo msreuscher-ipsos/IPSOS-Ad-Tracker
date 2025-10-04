@@ -43,17 +43,6 @@ Public Class Manager
 
     Private Sub Manager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        Timer.Start()
-
-    End Sub
-
-    Private Sub Timer_Tick(sender As Object, e As EventArgs) Handles Timer.Tick
-        Timer.Stop()
-        Open()
-    End Sub
-
-    Sub Open()
-
         Dim Login As New LoginForm(UserName, Password)
         Dim OpenFileDialog As New OpenFileDialog
 
@@ -83,6 +72,7 @@ Public Class Manager
                 Login.chkShowVariables.Enabled = False
                 Login.chkCleanLocal.Enabled = False
             End If
+            Login.StartPosition = FormStartPosition.CenterScreen
             Login.ShowDialog()
         End If
         OpenFileDialog.RestoreDirectory = True
@@ -136,7 +126,7 @@ Public Class Manager
             End If
 
             If Login.chkXML.Checked Then
-                If OpenFileDialog.ShowDialog(Me) = System.Windows.Forms.DialogResult.OK Then
+                If OpenFileDialog.ShowDialog(Login) = System.Windows.Forms.DialogResult.OK Then
                     Projects = New Project(Me, OpenFileDialog.FileName, UserName, Password, Login.txtSID.Text, Login)
                 Else
                     End
