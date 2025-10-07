@@ -25,13 +25,18 @@ Partial Class Project
         MainPanel = New SplitContainer()
         MainSplit = New SplitContainer()
         FlowLayout = New FlowLayoutPanel()
+        HideShowPanel = New Panel()
+        lblClose = New Label()
         ListPanel = New Panel()
+        lblOpen = New Label()
         CType(MainPanel, ComponentModel.ISupportInitialize).BeginInit()
         MainPanel.SuspendLayout()
         CType(MainSplit, ComponentModel.ISupportInitialize).BeginInit()
         MainSplit.Panel1.SuspendLayout()
         MainSplit.Panel2.SuspendLayout()
         MainSplit.SuspendLayout()
+        FlowLayout.SuspendLayout()
+        HideShowPanel.SuspendLayout()
         SuspendLayout()
         ' 
         ' MainPanel
@@ -67,6 +72,7 @@ Partial Class Project
         ' FlowLayout
         ' 
         FlowLayout.AutoScroll = True
+        FlowLayout.Controls.Add(HideShowPanel)
         FlowLayout.Dock = DockStyle.Fill
         FlowLayout.FlowDirection = FlowDirection.TopDown
         FlowLayout.Location = New Point(0, 0)
@@ -75,6 +81,25 @@ Partial Class Project
         FlowLayout.TabIndex = 0
         FlowLayout.WrapContents = False
         ' 
+        ' HideShowPanel
+        ' 
+        HideShowPanel.Controls.Add(lblOpen)
+        HideShowPanel.Controls.Add(lblClose)
+        HideShowPanel.Location = New Point(3, 3)
+        HideShowPanel.Name = "HideShowPanel"
+        HideShowPanel.Size = New Size(283, 40)
+        HideShowPanel.TabIndex = 0
+        ' 
+        ' lblClose
+        ' 
+        lblClose.Font = New Font("Segoe UI", 12F)
+        lblClose.Location = New Point(244, -7)
+        lblClose.Name = "lblClose"
+        lblClose.Size = New Size(34, 38)
+        lblClose.TabIndex = 2
+        lblClose.Text = "◀"
+        lblClose.TextAlign = ContentAlignment.MiddleCenter
+        ' 
         ' ListPanel
         ' 
         ListPanel.Dock = DockStyle.Fill
@@ -82,6 +107,17 @@ Partial Class Project
         ListPanel.Name = "ListPanel"
         ListPanel.Size = New Size(563, 504)
         ListPanel.TabIndex = 0
+        ' 
+        ' lblOpen
+        ' 
+        lblOpen.Font = New Font("Segoe UI", 12F)
+        lblOpen.Location = New Point(3, -7)
+        lblOpen.Name = "lblOpen"
+        lblOpen.Size = New Size(34, 38)
+        lblOpen.TabIndex = 3
+        lblOpen.Text = "▶"
+        lblOpen.TextAlign = ContentAlignment.MiddleCenter
+        lblOpen.Visible = False
         ' 
         ' Project
         ' 
@@ -103,10 +139,15 @@ Partial Class Project
         MainSplit.Panel2.ResumeLayout(False)
         CType(MainSplit, ComponentModel.ISupportInitialize).EndInit()
         MainSplit.ResumeLayout(False)
+        FlowLayout.ResumeLayout(False)
+        HideShowPanel.ResumeLayout(False)
         ResumeLayout(False)
     End Sub
     Friend WithEvents MainPanel As SplitContainer
     Friend WithEvents MainSplit As SplitContainer
     Friend WithEvents ListPanel As Panel
     Friend WithEvents FlowLayout As FlowLayoutPanel
+    Friend WithEvents HideShowPanel As Panel
+    Friend WithEvents lblClose As Label
+    Friend WithEvents lblOpen As Label
 End Class

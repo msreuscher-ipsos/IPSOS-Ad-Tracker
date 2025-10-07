@@ -1,10 +1,15 @@
 ﻿Imports System.ComponentModel
 Imports System.IO
+Imports System.Net.Sockets
 Imports System.Resources
+Imports System.Security.Cryptography
+Imports System.Text
 Imports System.Windows.Forms
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel
 Imports System.Xml.Serialization
 Imports ExportToDIM
 Imports GlobalRefs.Export
+Imports Microsoft.Web.WebView2.Core
 Public Class Manager
 
     Dim UserName As String = ""
@@ -46,19 +51,34 @@ Public Class Manager
         Dim Login As New LoginForm(UserName, Password)
         Dim OpenFileDialog As New OpenFileDialog
 
+        'If My.Computer.FileSystem.FileExists("C:\Ad Loader\LastInstance.resx") Then
+        '    Using ListResx As New ResXResourceReader("C:\Ad Loader\LastInstance.resx")
+        '        For Each entry As DictionaryEntry In ListResx
+        '            Dim Last As Instance = entry.Value
+        '            Login.txtUserName.Text = Last.User
+        '            Login.txtSID.Text = Last.SID
+        '            Login.txtPassword.Text = Last.GetPassword
+        '        Next
+        '    End Using
+        'End If
+
         If My.Computer.FileSystem.FileExists("C:\Ad Loader\LastInstance.resx") Then
-            Using ListResx As New ResXResourceReader("C:\Ad Loader\LastInstance.resx")
-                For Each entry As DictionaryEntry In ListResx
-                    Dim Last As Instance = entry.Value
-                    Login.txtUserName.Text = Last.User
-                    Login.txtSID.Text = Last.SID
-                    OpenFileDialog.FileName = Last.File
-                Next
+            Dim mySerializer As New XmlSerializer(GetType(Restart))
+            Using myFileStream As New FileStream("C:\Ad Loader\LastInstance.resx", FileMode.Open)
+                RestartInfo = CType(mySerializer.Deserialize(myFileStream), Restart)
             End Using
+
+            Login.txtUserName.Text = RestartInfo.Username
+            Login.txtPassword.Text = RestartInfo.GetPassword
+            Login.txtSID.Text = RestartInfo.SID
+            Login.boxServer.Text = RestartInfo.FTPServer
+            Login.chkSaveInfo.Checked = RestartInfo.SaveInfo
         End If
+
         If Restarted Then
             Login.txtUserName.Text = RestartInfo.Username
             Login.txtSID.Text = RestartInfo.SID
+            Login.txtPassword.Text = RestartInfo.GetPassword
             Login.boxServer.Text = RestartInfo.FTPServer
             Dim _Password As New Password
             _Password.ShowDialog()
@@ -75,6 +95,7 @@ Public Class Manager
             Login.StartPosition = FormStartPosition.CenterScreen
             Login.ShowDialog()
         End If
+
         OpenFileDialog.RestoreDirectory = True
         OpenFileDialog.Filter = "X-Track XML File|*.xml"
 
@@ -135,12 +156,12 @@ Public Class Manager
                 Projects = New Project(Me, OpenFileDialog.FileName, UserName, Password, Login.txtSID.Text, Login, Restarted)
             End If
 
-            If Restarted Then
-                If Not My.Computer.FileSystem.FileExists("C:\Ad Loader\LastInstance.resx") Then My.Computer.FileSystem.WriteAllText("C:\Ad Loader\LastInstance.resx", "", False)
-                Using LastResx As New ResXResourceWriter("C:\Ad Loader\LastInstance.resx")
-                    LastResx.AddResource("LastInstance", New Instance(UserName, Login.txtSID.Text, OpenFileDialog.FileName))
-                End Using
-            End If
+            'If Not My.Computer.FileSystem.FileExists("C:\Ad Loader\LastInstance.resx") Then My.Computer.FileSystem.WriteAllText("C:\Ad Loader\LastInstance.resx", "", False)
+            Dim RestartInfo As New Restart(Login.txtUserName.Text, Login.txtPassword.Text, Login.txtSID.Text, Login.boxServer.Text, False, Login.chkSaveInfo.Checked)
+            Dim mySerializer As XmlSerializer = New XmlSerializer(GetType(Restart))
+            Dim RestartResx As StreamWriter = New StreamWriter("C:\Ad Loader\LastInstance.resx")
+            mySerializer.Serialize(RestartResx, RestartInfo)
+            RestartResx.Close()
 
         Else
             End
@@ -203,15 +224,65 @@ Public Class Manager
     End Sub
 End Class
 
-<Serializable()> Public Class Instance
+Public Class DataProtectionSample
+    ' Create byte array for additional entropy when using Protect method.
+    Private Shared s_additionalEntropy As Byte() = {10, 7, 20, 25}
 
-    Public User As String
-    Public SID As String
-    Public File As String
-    Sub New(ByVal _User As String, _SID As String, ByVal _File As String)
-        User = _User
-        SID = _SID
-        File = _File
+
+    Public Shared Sub Main()
+        ' Create a simple byte array containing data to be encrypted.
+        Dim secret As Byte() = {0, 1, 2, 3, 4, 1, 2, 3, 4}
+
+        'Encrypt the data.
+        Dim encryptedSecret As Byte() = Protect(secret)
+        Console.WriteLine("The encrypted byte array is:")
+        PrintValues(encryptedSecret)
+
+        ' Decrypt the data and store in a byte array.
+        Dim originalData As Byte() = Unprotect(encryptedSecret)
+        Console.WriteLine("{0}The original data is:", Environment.NewLine)
+        PrintValues(originalData)
+
     End Sub
+
+
+    Public Shared Function Protect(ByVal data() As Byte) As Byte()
+        Try
+            ' Encrypt the data using DataProtectionScope.CurrentUser. The result can be decrypted
+            '  only by the same current user.
+            Return ProtectedData.Protect(data, s_additionalEntropy, DataProtectionScope.CurrentUser)
+        Catch e As CryptographicException
+            Console.WriteLine("Data was not encrypted. An error occurred.")
+            Console.WriteLine(e.ToString())
+            Return Nothing
+        End Try
+
+    End Function
+
+
+    Public Shared Function Unprotect(ByVal data() As Byte) As Byte()
+        Try
+            'Decrypt the data using DataProtectionScope.CurrentUser.
+            Try
+                Return ProtectedData.Unprotect(data, s_additionalEntropy, DataProtectionScope.CurrentUser)
+            Catch ex As Exception
+                Return Nothing
+            End Try
+        Catch e As CryptographicException
+            Console.WriteLine("Data was not decrypted. An error occurred.")
+            Console.WriteLine(e.ToString())
+            Return Nothing
+        End Try
+
+    End Function
+
+    Public Shared Function PrintValues(ByVal myArr() As [Byte]) As String
+        Dim ReturnString = ""
+        Dim i As [Byte]
+        For Each i In myArr
+            ReturnString &= i
+        Next i
+        Return ReturnString
+    End Function
 
 End Class

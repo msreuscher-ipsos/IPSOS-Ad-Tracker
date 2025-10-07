@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.Windows.Forms
 Imports System.Xml.Serialization
+Imports Markdig
 
 Public Class Intro
 
@@ -16,7 +17,7 @@ Public Class Intro
     End Sub
 
     Private Sub btnGuide_Click(sender As Object, e As EventArgs) Handles btnGuide.Click
-
+        Guide.ShowDialog()
     End Sub
 
     Private Sub Intro_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
@@ -29,13 +30,12 @@ Public Class Intro
     Public RestartInfo As Restart
     Private Sub Intro_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        If My.Computer.FileSystem.FileExists("C:\Ad Loader\Restart.resx") Then
+        If My.Computer.FileSystem.FileExists("C:\Ad Loader\LastInstance.resx") Then
             Dim mySerializer As New XmlSerializer(GetType(Restart))
-            Using myFileStream As New FileStream("C:\Ad Loader\Restart.resx", FileMode.Open)
+            Using myFileStream As New FileStream("C:\Ad Loader\LastInstance.resx", FileMode.Open)
                 RestartInfo = CType(mySerializer.Deserialize(myFileStream), Restart)
             End Using
-            Restarted = True
-            My.Computer.FileSystem.DeleteFile("C:\Ad Loader\Restart.resx", FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently)
+            Restarted = RestartInfo.Restarted
         End If
 
         If Restarted Then

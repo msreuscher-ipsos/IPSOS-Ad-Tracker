@@ -1,7 +1,9 @@
 Imports System.Collections.Specialized
+Imports System.IO
 Imports System.Net.Http
 Imports System.Resources
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel
+Imports System.Xml.Serialization
 Imports Microsoft.VisualBasic.Logging
 
 Public Class LoginForm

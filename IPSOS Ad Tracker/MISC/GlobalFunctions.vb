@@ -61,7 +61,7 @@ Namespace Global.GlobalRefs
                 End Try
             End If
 
-            Study.VersionMinor.Value += 0.1
+            Study.VersionMinor.Value += 0.01
             CreateLocalProjectFolder(Study)
 
             Dim StudySettings As String = ""
@@ -114,6 +114,10 @@ Namespace Global.GlobalRefs
             My.Computer.FileSystem.WriteAllText("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt", StudySettings, False)
 
             StartUpload(Study)
+            Study.hasChanges.Checked = False
+            For Each L As KeyValuePair(Of String, ListManager) In Study.Lists
+                Study.Lists(L.Key).hasChanges.Checked = False
+            Next
 
         End Sub
 
@@ -277,18 +281,6 @@ Namespace Global.GlobalRefs
                                 If .Ads(A.Key).include Then
                                     CultureSettings &= .Ads(A.Key).Cells(.Headers(H.Key).Index).Files.GetFiles & vbTab
                                 End If
-                                'lseIf .Ads(A.Key).Cells(.Headers(H.Key).Index).isMedium Then
-                                '   If .Ads(A.Key).include Then
-                                '       Dim Names As Array = System.Enum.GetNames(GetType(MediaType))
-                                '       Dim Values As Array = System.Enum.GetValues(GetType(MediaType))
-                                '       For i As Integer = 0 To UBound(Values)
-                                '           MsgBox(.Ads(A.Key).Cells(.Headers(H.Key).Index).Cell.Data)
-                                '           If .Ads(A.Key).Cells(.Headers(H.Key).Index).Cell.Data = Names(i) Then
-                                '               CultureSettings &= Values(i) & vbTab
-                                '               Exit For
-                                '           End If
-                                '       Next
-                                '   End If
                             Else
                                 If .Ads(A.Key).include Then
                                     If .Ads(A.Key).Cells(.Headers(H.Key).Index).isDrop Then

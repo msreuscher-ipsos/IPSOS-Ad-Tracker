@@ -77,7 +77,7 @@ Public Class Project
 
         CreateLocalProjectFolder(Me)
 
-        VersionMinor.DecimalPlaces = 1
+        VersionMinor.DecimalPlaces = 2
 
         Dim XR As New XmlDocument()
         If _Login.chkXML.Checked = True Then
@@ -203,6 +203,7 @@ Public Class Project
                         Dim LatestSW() As String
 
                         For Each Lang As String In My.Computer.FileSystem.GetDirectories($"C:\Ad Loader\{SID}\Ads\{Trim(line)}\", FileIO.SearchOption.SearchTopLevelOnly)
+
                             PBar.Add("Importing " & Lang)
                             Dim Language As String = Mid(Lang, Lang.LastIndexOf("\") + 2)
                             Dim SW() As String = Split(My.Computer.FileSystem.ReadAllText($"{Lang}\{SID}_Staging.txt"), vbCrLf)
@@ -240,18 +241,34 @@ Public Class Project
                                         If CulturedList(j) Then
                                             Dim HeaderIndex As String = Variables(VariableNames(HeaderList(j))).txtName.Text & " - " & Language
                                             Dim CellKey As String = Lists(Trim(line)).Headers(HeaderIndex).Index
-                                            If Variables(VariableNames(HeaderList(j))).txtName.Text = "File_Name" Then
+                                            Dim VarType As DataType = CType(Variables(VariableNames(HeaderList(j))).boxType.SelectedItem, DataType)
+
+                                            If (VarType.Value <> 2 And VarType.Value <> 6) Or
+                                               Variables(VariableNames(LatestHeaderList(j))).PList.Punches.Count > 0 Then
+                                                Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Record(j)
+                                            ElseIf VarType.Value = 6 Then
                                                 Lists(Trim(line)).Ads(Punch).Cells(CellKey).UpdateFileCell()
                                                 Lists(Trim(line)).Ads(Punch).Cells(CellKey).LoadFiles(Record(j))
                                             Else
-                                                Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Record(j)
+                                                If Record(j) <> "" Then
+                                                    With Lists(Trim(line)).Ads(Punch).Cells(CellKey).dropdown
+                                                        For k As Integer = 0 To .Items.Count - 1
+                                                            If CType(Lists(Trim(line)).Ads(Punch).Cells(CellKey).dropdown.Items(k), Punch).txtValue.Text = Record(j) Then
+                                                                Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Lists(Trim(line)).Ads(Punch).Cells(CellKey).dropdown.Items(k)
+                                                                Exit For
+                                                            End If
+                                                        Next
+                                                    End With
+                                                End If
                                             End If
+
                                         End If
                                     Next
                                 End If
                             Next
                         Next
 
+                        PBar.Add("Importing Ads for Uncultured Data")
                         For i As Integer = 3 To UBound(LatestSW)
                             Dim Record() As String = Split(LatestSW(i), vbTab)
                             Dim VCnt As Integer = 0
@@ -259,25 +276,32 @@ Public Class Project
                             If Lists(Trim(line)).Ads.ContainsKey(Punch) Then
                                 For j As Integer = 0 To UBound(LatestHeaderList)
                                     If LatestCulturedList(j) = False And
-                                       LatestHeaderList(j) <> "Punch" And
                                        Trim(LatestHeaderList(j)) <> "" Then
                                         If VariableNames.ContainsKey(LatestHeaderList(j)) Then
+
                                             Dim HeaderIndex As String = Variables(VariableNames(LatestHeaderList(j))).txtName.Text
                                             Dim CellKey As String = Lists(Trim(line)).Headers(HeaderIndex).Index
-                                            If LatestHeaderList(j) <> "Medium" Then
+                                            Dim VarType As DataType = CType(Variables(VariableNames(LatestHeaderList(j))).boxType.SelectedItem, DataType)
+
+                                            If (VarType.Value <> 2 Or Variables(VariableNames(LatestHeaderList(j))).PList.Punches.Count = 0) And
+                                                VarType.Value <> 6 Then
                                                 Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Record(j)
+                                            ElseIf VarType.Value = 6 Then
+                                                Lists(Trim(line)).Ads(Punch).Cells(CellKey).UpdateFileCell()
+                                                Lists(Trim(line)).Ads(Punch).Cells(CellKey).LoadFiles(Record(j))
                                             Else
-                                                Dim Names As Array = System.Enum.GetNames(GetType(MediaType))
-                                                Dim Values As Array = System.Enum.GetValues(GetType(MediaType))
                                                 If Record(j) <> "" Then
-                                                    For k As Integer = 0 To UBound(Values)
-                                                        If Record(j) = Values(k) Then
-                                                            Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Names(k)
-                                                            Exit For
-                                                        End If
-                                                    Next
+                                                    With Lists(Trim(line)).Ads(Punch).Cells(CellKey).dropdown
+                                                        For k As Integer = 0 To .Items.Count - 1
+                                                            If CType(Lists(Trim(line)).Ads(Punch).Cells(CellKey).dropdown.Items(k), Punch).txtValue.Text = Record(j) Then
+                                                                Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Lists(Trim(line)).Ads(Punch).Cells(CellKey).dropdown.Items(k)
+                                                                Exit For
+                                                            End If
+                                                        Next
+                                                    End With
                                                 End If
                                             End If
+
                                         End If
                                     End If
                                 Next
@@ -452,7 +476,6 @@ Public Class Project
                     readyForProduction.Checked = False
                 End If
         End Select
-
     End Sub
 
     Private Sub readyForProduction_Click(ByVal sender As Object, ByVal e As EventArgs) Handles readyForProduction.CheckedChanged
@@ -466,6 +489,33 @@ Public Class Project
         End Select
     End Sub
 
+    Private Sub lblClose_Click(sender As Object, e As EventArgs) Handles lblClose.Click
+        lblClose.Visible = False
+        lblOpen.Visible = True
+        MainSplit.SplitterDistance = 25
+
+        For Each L As KeyValuePair(Of String, ListManager) In Lists
+            Lists(L.Key).Tool.Visible = False
+        Next
+    End Sub
+
+    Private Sub lblOpen_Click(sender As Object, e As EventArgs) Handles lblOpen.Click
+        lblClose.Visible = True
+        lblOpen.Visible = False
+        MainSplit.SplitterDistance = 283
+
+        For Each L As KeyValuePair(Of String, ListManager) In Lists
+            Lists(L.Key).Tool.Visible = True
+        Next
+    End Sub
+
+    Private Sub lblOpenClose_MouseEnter(sender As Object, e As EventArgs) Handles lblClose.MouseEnter, lblOpen.MouseEnter
+        sender.ForeColor = SystemColors.MenuHighlight
+    End Sub
+
+    Private Sub lblOpenClose_MouseLeave(sender As Object, e As EventArgs) Handles lblClose.MouseLeave, lblOpen.MouseLeave
+        sender.ForeColor = SystemColors.ControlText
+    End Sub
 End Class
 
 

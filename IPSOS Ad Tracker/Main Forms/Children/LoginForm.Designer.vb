@@ -45,6 +45,7 @@ Partial Class LoginForm
         chkShowVariables = New CheckBox()
         chkXML = New CheckBox()
         chkCleanLocal = New CheckBox()
+        chkSaveInfo = New CheckBox()
         CType(LogoPictureBox, ComponentModel.ISupportInitialize).BeginInit()
         TableLayoutPanel1.SuspendLayout()
         SuspendLayout()
@@ -101,7 +102,7 @@ Partial Class LoginForm
         ' OK
         ' 
         OK.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        OK.Location = New Point(444, 302)
+        OK.Location = New Point(444, 338)
         OK.Name = "OK"
         OK.Size = New Size(94, 34)
         OK.TabIndex = 4
@@ -178,7 +179,7 @@ Partial Class LoginForm
         ' btnCancel
         ' 
         btnCancel.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        btnCancel.Location = New Point(544, 302)
+        btnCancel.Location = New Point(544, 338)
         btnCancel.Name = "btnCancel"
         btnCancel.Size = New Size(94, 34)
         btnCancel.TabIndex = 5
@@ -187,39 +188,50 @@ Partial Class LoginForm
         ' chkShowVariables
         ' 
         chkShowVariables.AutoSize = True
-        chkShowVariables.Location = New Point(258, 238)
+        chkShowVariables.Location = New Point(270, 272)
         chkShowVariables.Name = "chkShowVariables"
         chkShowVariables.Size = New Size(272, 24)
-        chkShowVariables.TabIndex = 10
+        chkShowVariables.TabIndex = 11
         chkShowVariables.Text = "Update Variables (if Existing Project)"
         chkShowVariables.UseVisualStyleBackColor = True
         ' 
         ' chkXML
         ' 
         chkXML.AutoSize = True
-        chkXML.Location = New Point(258, 208)
+        chkXML.Location = New Point(270, 242)
         chkXML.Name = "chkXML"
         chkXML.Size = New Size(382, 24)
-        chkXML.TabIndex = 9
+        chkXML.TabIndex = 10
         chkXML.Text = "Readin Existing XML File (required if no existing files)"
         chkXML.UseVisualStyleBackColor = True
         ' 
         ' chkCleanLocal
         ' 
         chkCleanLocal.AutoSize = True
-        chkCleanLocal.Location = New Point(258, 268)
+        chkCleanLocal.Location = New Point(270, 302)
         chkCleanLocal.Name = "chkCleanLocal"
         chkCleanLocal.Size = New Size(238, 24)
-        chkCleanLocal.TabIndex = 11
+        chkCleanLocal.TabIndex = 12
         chkCleanLocal.Text = "Clean local files before loading"
         chkCleanLocal.UseVisualStyleBackColor = True
+        ' 
+        ' chkSaveInfo
+        ' 
+        chkSaveInfo.AutoSize = True
+        chkSaveInfo.Location = New Point(270, 212)
+        chkSaveInfo.Name = "chkSaveInfo"
+        chkSaveInfo.Size = New Size(129, 24)
+        chkSaveInfo.TabIndex = 9
+        chkSaveInfo.Text = "Save password"
+        chkSaveInfo.UseVisualStyleBackColor = True
         ' 
         ' LoginForm
         ' 
         AcceptButton = OK
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(650, 348)
+        ClientSize = New Size(650, 384)
+        Controls.Add(chkSaveInfo)
         Controls.Add(chkCleanLocal)
         Controls.Add(chkXML)
         Controls.Add(chkShowVariables)
@@ -253,5 +265,6 @@ Partial Class LoginForm
     Friend WithEvents chkCleanLocal As CheckBox
     Friend WithEvents lblServer As Label
     Friend WithEvents boxServer As ComboBox
+    Friend WithEvents chkSaveInfo As CheckBox
 
 End Class

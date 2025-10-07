@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.Resources
 Imports System.Runtime.InteropServices
+Imports System.Text
 Imports System.Xml.Serialization
 Imports Microsoft.VisualBasic.ApplicationServices
 Public Class Restore
@@ -178,7 +179,7 @@ Public Class Restore
         Next
 
         If Backedup Then
-            Dim RestartInfo As New Restart(Study.Login.txtUserName.Text, Study.Login.txtSID.Text, Study.Login.boxServer.Text)
+            Dim RestartInfo As New Restart(Study.Login.txtUserName.Text, Study.Login.txtPassword.Text, Study.Login.txtSID.Text, Study.Login.boxServer.Text, True, Study.Login.chkSaveInfo.Checked)
             Dim mySerializer As XmlSerializer = New XmlSerializer(GetType(Restart))
             Dim RestartResx As StreamWriter = New StreamWriter("C:\Ad Loader\Restart.resx")
             mySerializer.Serialize(RestartResx, RestartInfo)
@@ -188,6 +189,7 @@ Public Class Restore
 
     End Sub
     Private Sub btnRestoreSelected_Click(sender As Object, e As EventArgs) Handles btnRestoreSelected.Click
+
         Dim Backedup As Boolean = False
         For Each Node As TreeNode In RestoreSelectedTree.Nodes
             For Each SubNode As TreeNode In Node.Nodes
@@ -202,7 +204,7 @@ Public Class Restore
         Next
 
         If Backedup Then
-            Dim RestartInfo As New Restart(Study.Login.txtUserName.Text, Study.Login.txtSID.Text, Study.Login.boxServer.Text)
+            Dim RestartInfo As New Restart(Study.Login.txtUserName.Text, Study.Login.txtPassword.Text, Study.Login.txtSID.Text, Study.Login.boxServer.Text, True, Study.Login.chkSaveInfo.Checked)
             Dim mySerializer As XmlSerializer = New XmlSerializer(GetType(Restart))
             Dim RestartResx As StreamWriter = New StreamWriter("C:\Ad Loader\Restart.resx")
             mySerializer.Serialize(RestartResx, RestartInfo)
@@ -219,19 +221,42 @@ End Class
     Public Username As String
     Public SID As String
     Public FTPServer As String
+    Public Password As Byte()
+    Public Restarted As Boolean
+    Public SaveInfo As Boolean
 
     Public Sub New()
         ' Optional: Initialize properties with default values
         Username = String.Empty
         SID = String.Empty
         FTPServer = String.Empty
+        Password = Nothing
     End Sub
 
-    Sub New(ByVal _User As String, _SID As String, ByVal Server As String)
+    Sub New(ByVal _User As String, ByVal _Password As String, _SID As String, ByVal Server As String, ByVal _Restarted As Boolean, ByVal _Save As Boolean)
         Username = _User
         SID = _SID
         FTPServer = Server
+        Restarted = _Restarted
+        SaveInfo = _Save
+
+        If SaveInfo Or Restarted Then
+            Dim originalBytes As Byte() = Encoding.UTF8.GetBytes(_Password)
+            Password = DataProtectionSample.Protect(originalBytes)
+        End If
     End Sub
+
+    Public ReadOnly Property GetPassword As String
+        Get
+            If SaveInfo Then
+                Dim originalData As Byte() = DataProtectionSample.Unprotect(Password)
+                Return Encoding.UTF8.GetString(originalData)
+            Else
+                Return ""
+            End If
+        End Get
+    End Property
+
 
 End Class
 

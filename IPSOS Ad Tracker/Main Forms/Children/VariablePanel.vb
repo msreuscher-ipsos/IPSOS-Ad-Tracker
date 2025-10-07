@@ -97,6 +97,10 @@ Public Class VariablePanel
             End If
         End If
     End Sub
+
+    Private Sub Panel_Paint(sender As Object, e As PaintEventArgs) Handles Panel.Paint
+
+    End Sub
 End Class
 
 

@@ -79,7 +79,7 @@ Public Class Cell
     Public isMedium As Boolean = False
     Public isDrop As Boolean = False
 
-    WithEvents dropdown As New DropdownListCell()
+    Public WithEvents dropdown As New DropdownListCell()
     Sub New(ByRef _Parent As Ad,
             ByRef _Header As Header,
             ByRef _Sheet As unvell.ReoGrid.Worksheet,

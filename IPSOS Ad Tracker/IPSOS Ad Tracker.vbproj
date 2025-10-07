@@ -27,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.42.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3537.50" />
     <PackageReference Include="unvell.ReoGrid.dll" Version="3.3.1" />
     <PackageReference Include="WinSCP" Version="6.5.3" />
   </ItemGroup>
@@ -58,6 +60,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Guide.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="MISC\IPSOS.png" Link="MISC\IPSOS.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
