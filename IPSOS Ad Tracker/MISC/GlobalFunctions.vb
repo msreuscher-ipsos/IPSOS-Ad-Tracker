@@ -138,7 +138,7 @@ Namespace Global.GlobalRefs
             Dim SFTP As New SFTPWinSCP
             Dim FTPDirectory As String = "/projects/" & Study.SID
 
-            SFTP.Session(Study.UserName, Study.Password, Study.Login.boxServer.Text)
+            SFTP.Session(Study.UserName, Study.Password, Study.IntroPage.boxServer.Text)
 
             If SFTP.DirectoryExists(Study, FTPDirectory) = False Then
                 PBar.Add("FTP Folder does not exist.")
@@ -209,7 +209,7 @@ Namespace Global.GlobalRefs
             Dim SFTP As New SFTPWinSCP
             Dim FTPDirectory As String = "/projects/" & Study.SID
 
-            SFTP.Session(Study.UserName, Study.Password, Study.Login.boxServer.Text)
+            SFTP.Session(Study.UserName, Study.Password, Study.IntroPage.boxServer.Text)
 
             If SFTP.DirectoryExists(Study, FTPDirectory) = False Then
                 PBar.Add("Creating FTP Folder")

@@ -33,7 +33,7 @@ Public Class Project
     Public LoadDate As String = ""
 
     Dim ProjInfo As New ProjectInfo
-    Public Login As LoginForm
+    Public IntroPage As Intro
 
     Dim PBar As New Progress
 
@@ -47,7 +47,7 @@ Public Class Project
                    ByVal _User As String,
                    ByVal _Pass As String,
                    ByVal _SID As String,
-                   ByRef _Login As LoginForm,
+                   ByRef _Intro As Intro,
                    Optional ByVal Restarted As Boolean = False)
 
         ' This call is required by the designer.
@@ -61,9 +61,9 @@ Public Class Project
         PBar.Show()
 
 
-        Login = _Login
+        IntroPage = _Intro
 
-        If _Login.chkCleanLocal.Checked Then
+        If IntroPage.chkCleanLocal.Checked Then
             PBar.Add("Cleaning Local Files for " & _SID)
             CleanFiles(_SID)
         End If
@@ -80,7 +80,7 @@ Public Class Project
         VersionMinor.DecimalPlaces = 2
 
         Dim XR As New XmlDocument()
-        If _Login.chkXML.Checked = True Then
+        If IntroPage.chkXML.Checked = True Then
             XR.Load(XMLFile)
 
             Me.Text = XR.SelectNodes("/main/ipsosfileinfo/program_name")(0).InnerText
@@ -127,7 +127,7 @@ Public Class Project
             End If
             VariableManager.ReadinCustomVariables(ProjInfo.Variables)
 
-            If _Login.chkShowVariables.Checked = True Then
+            If IntroPage.chkShowVariables.Checked = True Then
                 PBar.Hide()
                 VariableManager.ShowDialog()
                 PBar.Show()
@@ -143,7 +143,7 @@ Public Class Project
             VariableNames.Add(Variables(V.Key).txtName.Text, Variables(V.Key).Index)
         Next
 
-        If _Login.chkXML.Checked = True Or projectExists = False Then
+        If IntroPage.chkXML.Checked = True Or projectExists = False Then
 
             PBar.Add("Reading X-Track Countries")
             For Each Node As XmlNode In XR.SelectNodes("/main/countries/country")
@@ -190,7 +190,7 @@ Public Class Project
 
         If projectExists Then
 
-            If _Login.chkXML.Checked = False Then CreateLists()
+            If IntroPage.chkXML.Checked = False Then CreateLists()
 
             For Each line As String In ProjInfo.Lists
                 If Trim(line) <> "" Then
@@ -427,7 +427,7 @@ Public Class Project
         ' ADD FTP Check, Return True if found, False if Not
         Dim SFTP As New SFTPWinSCP
         Dim FTPDirectory As String = "/projects/" & SID
-        SFTP.Session(UserName, Password, Login.boxServer.Text)
+        SFTP.Session(UserName, Password, IntroPage.boxServer.Text)
 
         If SFTP.DirectoryExists(Me, FTPDirectory & "/Ads/") Then
             If Restarted = False Then

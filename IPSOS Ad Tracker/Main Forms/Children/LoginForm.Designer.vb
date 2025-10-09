@@ -14,7 +14,6 @@ Partial Class LoginForm
             MyBase.Dispose(disposing)
         End Try
     End Sub
-    Friend WithEvents LogoPictureBox As System.Windows.Forms.PictureBox
     Friend WithEvents lblUserName As System.Windows.Forms.Label
     Friend WithEvents lblPassword As System.Windows.Forms.Label
     Friend WithEvents txtUserName As System.Windows.Forms.TextBox
@@ -29,8 +28,6 @@ Partial Class LoginForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(LoginForm))
-        LogoPictureBox = New PictureBox()
         lblUserName = New Label()
         lblPassword = New Label()
         txtUserName = New TextBox()
@@ -42,22 +39,9 @@ Partial Class LoginForm
         lblServer = New Label()
         boxServer = New ComboBox()
         btnCancel = New Button()
-        chkShowVariables = New CheckBox()
-        chkXML = New CheckBox()
-        chkCleanLocal = New CheckBox()
         chkSaveInfo = New CheckBox()
-        CType(LogoPictureBox, ComponentModel.ISupportInitialize).BeginInit()
         TableLayoutPanel1.SuspendLayout()
         SuspendLayout()
-        ' 
-        ' LogoPictureBox
-        ' 
-        LogoPictureBox.Image = CType(resources.GetObject("LogoPictureBox.Image"), Image)
-        LogoPictureBox.Location = New Point(0, 0)
-        LogoPictureBox.Name = "LogoPictureBox"
-        LogoPictureBox.Size = New Size(155, 156)
-        LogoPictureBox.TabIndex = 0
-        LogoPictureBox.TabStop = False
         ' 
         ' lblUserName
         ' 
@@ -102,7 +86,7 @@ Partial Class LoginForm
         ' OK
         ' 
         OK.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        OK.Location = New Point(444, 338)
+        OK.Location = New Point(299, 211)
         OK.Name = "OK"
         OK.Size = New Size(94, 34)
         OK.TabIndex = 4
@@ -142,7 +126,7 @@ Partial Class LoginForm
         TableLayoutPanel1.Controls.Add(txtPassword, 1, 1)
         TableLayoutPanel1.Controls.Add(lblPassword, 0, 1)
         TableLayoutPanel1.Controls.Add(boxServer, 1, 3)
-        TableLayoutPanel1.Location = New Point(161, 12)
+        TableLayoutPanel1.Location = New Point(12, 12)
         TableLayoutPanel1.Name = "TableLayoutPanel1"
         TableLayoutPanel1.RowCount = 4
         TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Absolute, 48F))
@@ -179,46 +163,16 @@ Partial Class LoginForm
         ' btnCancel
         ' 
         btnCancel.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        btnCancel.Location = New Point(544, 338)
+        btnCancel.Location = New Point(399, 211)
         btnCancel.Name = "btnCancel"
         btnCancel.Size = New Size(94, 34)
         btnCancel.TabIndex = 5
         btnCancel.Text = "&Cancel"
         ' 
-        ' chkShowVariables
-        ' 
-        chkShowVariables.AutoSize = True
-        chkShowVariables.Location = New Point(270, 272)
-        chkShowVariables.Name = "chkShowVariables"
-        chkShowVariables.Size = New Size(272, 24)
-        chkShowVariables.TabIndex = 11
-        chkShowVariables.Text = "Update Variables (if Existing Project)"
-        chkShowVariables.UseVisualStyleBackColor = True
-        ' 
-        ' chkXML
-        ' 
-        chkXML.AutoSize = True
-        chkXML.Location = New Point(270, 242)
-        chkXML.Name = "chkXML"
-        chkXML.Size = New Size(382, 24)
-        chkXML.TabIndex = 10
-        chkXML.Text = "Readin Existing XML File (required if no existing files)"
-        chkXML.UseVisualStyleBackColor = True
-        ' 
-        ' chkCleanLocal
-        ' 
-        chkCleanLocal.AutoSize = True
-        chkCleanLocal.Location = New Point(270, 302)
-        chkCleanLocal.Name = "chkCleanLocal"
-        chkCleanLocal.Size = New Size(238, 24)
-        chkCleanLocal.TabIndex = 12
-        chkCleanLocal.Text = "Clean local files before loading"
-        chkCleanLocal.UseVisualStyleBackColor = True
-        ' 
         ' chkSaveInfo
         ' 
         chkSaveInfo.AutoSize = True
-        chkSaveInfo.Location = New Point(270, 212)
+        chkSaveInfo.Location = New Point(121, 212)
         chkSaveInfo.Name = "chkSaveInfo"
         chkSaveInfo.Size = New Size(129, 24)
         chkSaveInfo.TabIndex = 9
@@ -230,15 +184,11 @@ Partial Class LoginForm
         AcceptButton = OK
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(650, 384)
+        ClientSize = New Size(508, 257)
         Controls.Add(chkSaveInfo)
-        Controls.Add(chkCleanLocal)
-        Controls.Add(chkXML)
-        Controls.Add(chkShowVariables)
         Controls.Add(btnCancel)
         Controls.Add(TableLayoutPanel1)
         Controls.Add(OK)
-        Controls.Add(LogoPictureBox)
         FormBorderStyle = FormBorderStyle.FixedDialog
         MaximizeBox = False
         MinimizeBox = False
@@ -248,7 +198,6 @@ Partial Class LoginForm
         SizeGripStyle = SizeGripStyle.Hide
         StartPosition = FormStartPosition.CenterParent
         TopMost = True
-        CType(LogoPictureBox, ComponentModel.ISupportInitialize).EndInit()
         TableLayoutPanel1.ResumeLayout(False)
         TableLayoutPanel1.PerformLayout()
         ResumeLayout(False)
@@ -260,9 +209,6 @@ Partial Class LoginForm
     Friend WithEvents txtSID As TextBox
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents btnCancel As Button
-    Friend WithEvents chkShowVariables As CheckBox
-    Friend WithEvents chkXML As CheckBox
-    Friend WithEvents chkCleanLocal As CheckBox
     Friend WithEvents lblServer As Label
     Friend WithEvents boxServer As ComboBox
     Friend WithEvents chkSaveInfo As CheckBox

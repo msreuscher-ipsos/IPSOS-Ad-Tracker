@@ -167,6 +167,7 @@ Public Class Restore
     End Sub
 
     Private Sub btnRestoreAll_Click(sender As Object, e As EventArgs) Handles btnRestoreAll.Click
+
         Dim Backedup As Boolean = False
         For Each Node As TreeNode In RestoreAllTree.Nodes
             If Node.Checked = True Then
@@ -179,7 +180,7 @@ Public Class Restore
         Next
 
         If Backedup Then
-            Dim RestartInfo As New Restart(Study.Login.txtUserName.Text, Study.Login.txtPassword.Text, Study.Login.txtSID.Text, Study.Login.boxServer.Text, True, Study.Login.chkSaveInfo.Checked)
+            Dim RestartInfo As New Restart(Study.IntroPage.txtUserName.Text, Study.IntroPage.txtPassword.Text, Study.IntroPage.txtSID.Text, Study.IntroPage.boxServer.Text, True, Study.IntroPage.chkSaveInfo.Checked)
             Dim mySerializer As XmlSerializer = New XmlSerializer(GetType(Restart))
             Dim RestartResx As StreamWriter = New StreamWriter("C:\Ad Loader\Restart.resx")
             mySerializer.Serialize(RestartResx, RestartInfo)
@@ -204,7 +205,7 @@ Public Class Restore
         Next
 
         If Backedup Then
-            Dim RestartInfo As New Restart(Study.Login.txtUserName.Text, Study.Login.txtPassword.Text, Study.Login.txtSID.Text, Study.Login.boxServer.Text, True, Study.Login.chkSaveInfo.Checked)
+            Dim RestartInfo As New Restart(Study.IntroPage.txtUserName.Text, Study.IntroPage.txtPassword.Text, Study.IntroPage.txtSID.Text, Study.IntroPage.boxServer.Text, True, Study.IntroPage.chkSaveInfo.Checked)
             Dim mySerializer As XmlSerializer = New XmlSerializer(GetType(Restart))
             Dim RestartResx As StreamWriter = New StreamWriter("C:\Ad Loader\Restart.resx")
             mySerializer.Serialize(RestartResx, RestartInfo)

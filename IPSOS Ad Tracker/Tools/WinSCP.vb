@@ -1,4 +1,10 @@
-﻿Imports System.Threading
+﻿Imports System.IO
+Imports System.IO.Packaging
+Imports System.Threading
+Imports System.Windows.Automation
+Imports System.Windows.Diagnostics
+Imports System.Xml.Serialization
+Imports Microsoft.VisualBasic.ApplicationServices
 Imports WinSCP
 
 Public Class SFTPWinSCP
@@ -14,11 +20,10 @@ Public Class SFTPWinSCP
             End
         End If
 
+        Dim Login As New LoginForm(Study.UserName, Study.Password, Study.IntroPage.boxServer.Text, Study.SID, Study.IntroPage.chkSaveInfo.Checked)
         If InStr(ex.Message, "Connection failed.") > 0 Then
-            With Study.Login
-                .chkCleanLocal.Visible = False
-                .chkShowVariables.Visible = False
-                .chkXML.Visible = False
+            With Login
+                .Text = "Connection Failed. Verify your VPN Connect."
                 .boxServer.Enabled = True
                 .txtSID.Enabled = False
                 .txtUserName.Enabled = False
@@ -26,10 +31,8 @@ Public Class SFTPWinSCP
                 .ShowDialog(Study.ParentManager)
             End With
         ElseIf InStr(ex.Message, "Authentication failed.") > 0 Then
-            With Study.Login
-                .chkCleanLocal.Visible = False
-                .chkShowVariables.Visible = False
-                .chkXML.Visible = False
+            With Login
+                .Text = "Authenication Failed. VerifyResult your Username And Password."
                 .boxServer.Enabled = False
                 .txtSID.Enabled = False
                 .txtUserName.Enabled = True
@@ -37,10 +40,8 @@ Public Class SFTPWinSCP
                 .ShowDialog(Study.ParentManager)
             End With
         Else
-            With Study.Login
-                .chkCleanLocal.Visible = False
-                .chkShowVariables.Visible = False
-                .chkXML.Visible = False
+            With Login
+                .Text = "Connection Failed. Please verify all your information."
                 .boxServer.Enabled = True
                 .txtSID.Enabled = False
                 .txtUserName.Enabled = True
@@ -49,11 +50,29 @@ Public Class SFTPWinSCP
             End With
         End If
 
-        If Study.Login.DialogResult = DialogResult.Cancel Then End
+        If Study.IntroPage.DialogResult = DialogResult.Cancel Then End
 
-        Study.UserName = Study.Login.txtUserName.Text
-        Study.Password = Study.Login.txtPassword.Text
-        Session(Study.Login.txtUserName.Text, Study.Login.txtPassword.Text, Study.Login.boxServer.Text)
+        Study.UserName = Study.IntroPage.txtUserName.Text
+        Study.Password = Study.IntroPage.txtPassword.Text
+
+        Study.IntroPage.txtUserName.Text = Login.txtUserName.Text
+        Study.IntroPage.txtPassword.Text = Login.txtPassword.Text
+        Study.IntroPage.boxServer.Text = Login.boxServer.Text
+        Study.IntroPage.chkSaveInfo.Checked = Login.chkSaveInfo.Checked
+
+        If Login.chkSaveInfo.Checked Then
+            Dim RestartInfo As New Restart(Study.IntroPage.txtUserName.Text,
+                                       Study.IntroPage.txtPassword.Text,
+                                       Study.IntroPage.txtSID.Text,
+                                       Study.IntroPage.boxServer.Text, False,
+                                       Study.IntroPage.chkSaveInfo.Checked)
+            Dim mySerializer As XmlSerializer = New XmlSerializer(GetType(Restart))
+            Dim RestartResx As StreamWriter = New StreamWriter("C:\Ad Loader\LastInstance.resx")
+            mySerializer.Serialize(RestartResx, RestartInfo)
+            RestartResx.Close()
+        End If
+
+        Session(Study.IntroPage.txtUserName.Text, Study.IntroPage.txtPassword.Text, Study.IntroPage.boxServer.Text)
 
     End Sub
     Public Sub Session(ByVal User As String, ByVal Password As String, ByVal Host As String)

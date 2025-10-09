@@ -12,6 +12,9 @@ Imports GlobalRefs.Export
 Imports Microsoft.Web.WebView2.Core
 Public Class Manager
 
+
+    Public IntroPage As Intro
+
     Dim UserName As String = ""
     Dim Password As String = ""
 
@@ -22,7 +25,7 @@ Public Class Manager
     Public RestartInfo As Restart
     Public IntroReturn As Intro.IntroReturn
 
-    Public Sub New(ByVal _Restarted As Boolean, ByVal _RestartInfo As Restart, ByVal _IntroReturn As Intro.IntroReturn)
+    Public Sub New(ByVal _Restarted As Boolean, ByVal _RestartInfo As Restart, ByRef _Intro As Intro, ByVal _IntroReturn As Intro.IntroReturn)
 
         ' This call is required by the designer.
         InitializeComponent()
@@ -31,6 +34,7 @@ Public Class Manager
         Restarted = _Restarted
         RestartInfo = _RestartInfo
         IntroReturn = _IntroReturn
+        IntroPage = _Intro
 
     End Sub
 
@@ -48,62 +52,21 @@ Public Class Manager
 
     Private Sub Manager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        Dim Login As New LoginForm(UserName, Password)
         Dim OpenFileDialog As New OpenFileDialog
 
-        'If My.Computer.FileSystem.FileExists("C:\Ad Loader\LastInstance.resx") Then
-        '    Using ListResx As New ResXResourceReader("C:\Ad Loader\LastInstance.resx")
-        '        For Each entry As DictionaryEntry In ListResx
-        '            Dim Last As Instance = entry.Value
-        '            Login.txtUserName.Text = Last.User
-        '            Login.txtSID.Text = Last.SID
-        '            Login.txtPassword.Text = Last.GetPassword
-        '        Next
-        '    End Using
-        'End If
-
-        If My.Computer.FileSystem.FileExists("C:\Ad Loader\LastInstance.resx") Then
-            Dim mySerializer As New XmlSerializer(GetType(Restart))
-            Using myFileStream As New FileStream("C:\Ad Loader\LastInstance.resx", FileMode.Open)
-                RestartInfo = CType(mySerializer.Deserialize(myFileStream), Restart)
-            End Using
-
-            Login.txtUserName.Text = RestartInfo.Username
-            Login.txtPassword.Text = RestartInfo.GetPassword
-            Login.txtSID.Text = RestartInfo.SID
-            Login.boxServer.Text = RestartInfo.FTPServer
-            Login.chkSaveInfo.Checked = RestartInfo.SaveInfo
-        End If
-
-        If Restarted Then
-            Login.txtUserName.Text = RestartInfo.Username
-            Login.txtSID.Text = RestartInfo.SID
-            Login.txtPassword.Text = RestartInfo.GetPassword
-            Login.boxServer.Text = RestartInfo.FTPServer
-            Dim _Password As New Password
-            _Password.ShowDialog()
-            Login.txtPassword.Text = _Password.txtPassword.Text
-            Login.DialogResult = DialogResult.OK
-        Else
+        If Restarted = False Then
             If IntroReturn = Intro.IntroReturn.NewFile Then
-                Login.chkXML.Checked = True
-                Login.chkXML.Enabled = False
-                Login.chkShowVariables.Checked = True
-                Login.chkShowVariables.Enabled = False
-                Login.chkCleanLocal.Enabled = False
             End If
-            Login.StartPosition = FormStartPosition.CenterScreen
-            Login.ShowDialog()
         End If
 
         OpenFileDialog.RestoreDirectory = True
         OpenFileDialog.Filter = "X-Track XML File|*.xml"
 
 
-        If Login.DialogResult = DialogResult.OK Then
+        If IntroPage.DialogResult = DialogResult.OK Then
 
-            UserName = Login.txtUserName.Text
-            Password = Login.txtPassword.Text
+            UserName = IntroPage.txtUserName.Text
+            Password = IntroPage.txtPassword.Text
 
             Dim UserDict As New Dictionary(Of String, String)
             UserDict.Add(UserName, UserName)
@@ -126,11 +89,11 @@ Public Class Manager
                 End Using
 
                 Dim SIDDict As New Dictionary(Of String, String)
-                SIDDict.Add(Login.txtSID.Text, Login.txtSID.Text)
+                SIDDict.Add(IntroPage.txtSID.Text, IntroPage.txtSID.Text)
                 If My.Computer.FileSystem.FileExists("C:\Ad Loader\SIDs.resx") Then
                     Using SIDResx As New ResXResourceReader("C:\Ad Loader\SIDs.resx")
                         For Each entry As DictionaryEntry In SIDResx
-                            If Login.txtSID.Text <> entry.Value Then
+                            If IntroPage.txtSID.Text <> entry.Value Then
                                 SIDDict.Add(entry.Value, entry.Value)
                             End If
                         Next
@@ -146,18 +109,18 @@ Public Class Manager
 
             End If
 
-            If Login.chkXML.Checked Then
-                If OpenFileDialog.ShowDialog(Login) = System.Windows.Forms.DialogResult.OK Then
-                    Projects = New Project(Me, OpenFileDialog.FileName, UserName, Password, Login.txtSID.Text, Login)
+            If Intro.chkXML.Checked Then
+                If OpenFileDialog.ShowDialog(IntroPage) = System.Windows.Forms.DialogResult.OK Then
+                    Projects = New Project(Me, OpenFileDialog.FileName, UserName, Password, IntroPage.txtSID.Text, Intro)
                 Else
                     End
                 End If
             Else
-                Projects = New Project(Me, OpenFileDialog.FileName, UserName, Password, Login.txtSID.Text, Login, Restarted)
+                Projects = New Project(Me, OpenFileDialog.FileName, UserName, Password, IntroPage.txtSID.Text, Intro, Restarted)
             End If
 
             'If Not My.Computer.FileSystem.FileExists("C:\Ad Loader\LastInstance.resx") Then My.Computer.FileSystem.WriteAllText("C:\Ad Loader\LastInstance.resx", "", False)
-            Dim RestartInfo As New Restart(Login.txtUserName.Text, Login.txtPassword.Text, Login.txtSID.Text, Login.boxServer.Text, False, Login.chkSaveInfo.Checked)
+            Dim RestartInfo As New Restart(IntroPage.txtUserName.Text, IntroPage.txtPassword.Text, IntroPage.txtSID.Text, IntroPage.boxServer.Text, False, IntroPage.chkSaveInfo.Checked)
             Dim mySerializer As XmlSerializer = New XmlSerializer(GetType(Restart))
             Dim RestartResx As StreamWriter = New StreamWriter("C:\Ad Loader\LastInstance.resx")
             mySerializer.Serialize(RestartResx, RestartInfo)

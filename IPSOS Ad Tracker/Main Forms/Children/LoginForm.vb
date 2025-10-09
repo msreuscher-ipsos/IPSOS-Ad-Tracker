@@ -16,7 +16,7 @@ Public Class LoginForm
     ' Subsequently, My.User will return identity information encapsulated in the CustomPrincipal object
     ' such as the username, display name, etc.
 
-    Public Sub New(ByVal _Username As String, ByVal _Password As String)
+    Public Sub New(ByVal _Username As String, ByVal _Password As String, ByVal _Server As String, ByVal _SID As String, ByVal _save As Boolean)
 
         ' This call is required by the designer.
         InitializeComponent()
@@ -24,6 +24,9 @@ Public Class LoginForm
         ' Add any initialization after the InitializeComponent() call.
         txtUserName.Text = _Username
         txtPassword.Text = _Password
+        txtSID.Text = _SID
+        boxServer.Text = _Server
+        chkSaveInfo.Checked = _save
 
         boxServer.SelectedIndex = 0
 
@@ -77,4 +80,5 @@ Public Class LoginForm
     Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
         End
     End Sub
+
 End Class
