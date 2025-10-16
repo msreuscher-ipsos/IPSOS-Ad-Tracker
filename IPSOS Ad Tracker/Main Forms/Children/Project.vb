@@ -13,6 +13,7 @@ Public Class Project
     Public Password As String = ""
 
     Public SID As String
+    Public FTP As String
 
     Dim Title As String
     Dim WaveName As String
@@ -46,6 +47,7 @@ Public Class Project
                    ByVal XMLFile As String,
                    ByVal _User As String,
                    ByVal _Pass As String,
+                   ByVal _FTP As String,
                    ByVal _SID As String,
                    ByRef _Intro As Intro,
                    Optional ByVal Restarted As Boolean = False)
@@ -73,6 +75,7 @@ Public Class Project
         ParentManager = _Parent
         UserName = _User
         Password = _Pass
+        FTP = _FTP
         SID = _SID
 
         CreateLocalProjectFolder(Me)

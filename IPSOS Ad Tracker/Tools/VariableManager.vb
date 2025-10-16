@@ -89,5 +89,4 @@ Public Class VariableManager
         Me.Close()
     End Sub
 
-
 End Class

@@ -16,7 +16,6 @@ Public Class Guide
         Dim htmlContent As String = markdownText
         Await WebView.EnsureCoreWebView2Async
         WebView.NavigateToString(htmlContent)
-
     End Sub
 
 

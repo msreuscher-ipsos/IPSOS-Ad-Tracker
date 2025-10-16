@@ -111,12 +111,12 @@ Public Class Manager
 
             If Intro.chkXML.Checked Then
                 If OpenFileDialog.ShowDialog(IntroPage) = System.Windows.Forms.DialogResult.OK Then
-                    Projects = New Project(Me, OpenFileDialog.FileName, UserName, Password, IntroPage.txtSID.Text, Intro)
+                    Projects = New Project(Me, OpenFileDialog.FileName, UserName, Password, IntroPage.boxServer.SelectedText, IntroPage.txtSID.Text, Intro)
                 Else
                     End
                 End If
             Else
-                Projects = New Project(Me, OpenFileDialog.FileName, UserName, Password, IntroPage.txtSID.Text, Intro, Restarted)
+                Projects = New Project(Me, OpenFileDialog.FileName, UserName, Password, IntroPage.boxServer.SelectedItem, IntroPage.txtSID.Text, Intro, Restarted)
             End If
 
             'If Not My.Computer.FileSystem.FileExists("C:\Ad Loader\LastInstance.resx") Then My.Computer.FileSystem.WriteAllText("C:\Ad Loader\LastInstance.resx", "", False)

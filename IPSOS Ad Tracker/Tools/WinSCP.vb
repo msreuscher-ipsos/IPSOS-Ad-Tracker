@@ -57,14 +57,14 @@ Public Class SFTPWinSCP
 
         Study.IntroPage.txtUserName.Text = Login.txtUserName.Text
         Study.IntroPage.txtPassword.Text = Login.txtPassword.Text
-        Study.IntroPage.boxServer.Text = Login.boxServer.Text
+        Study.IntroPage.boxServer.Text = Login.boxServer.SelectedItem
         Study.IntroPage.chkSaveInfo.Checked = Login.chkSaveInfo.Checked
 
         If Login.chkSaveInfo.Checked Then
             Dim RestartInfo As New Restart(Study.IntroPage.txtUserName.Text,
                                        Study.IntroPage.txtPassword.Text,
                                        Study.IntroPage.txtSID.Text,
-                                       Study.IntroPage.boxServer.Text, False,
+                                       Study.IntroPage.boxServer.SelectedItem, False,
                                        Study.IntroPage.chkSaveInfo.Checked)
             Dim mySerializer As XmlSerializer = New XmlSerializer(GetType(Restart))
             Dim RestartResx As StreamWriter = New StreamWriter("C:\Ad Loader\LastInstance.resx")
@@ -72,7 +72,7 @@ Public Class SFTPWinSCP
             RestartResx.Close()
         End If
 
-        Session(Study.IntroPage.txtUserName.Text, Study.IntroPage.txtPassword.Text, Study.IntroPage.boxServer.Text)
+        Session(Study.IntroPage.txtUserName.Text, Study.IntroPage.txtPassword.Text, Study.IntroPage.boxServer.SelectedItem)
 
     End Sub
     Public Sub Session(ByVal User As String, ByVal Password As String, ByVal Host As String)

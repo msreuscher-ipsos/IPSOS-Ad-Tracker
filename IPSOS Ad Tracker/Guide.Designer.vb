@@ -34,7 +34,7 @@ Partial Class Guide
         WebView.Dock = DockStyle.Fill
         WebView.Location = New Point(0, 0)
         WebView.Name = "WebView"
-        WebView.Size = New Size(759, 485)
+        WebView.Size = New Size(982, 553)
         WebView.TabIndex = 1
         WebView.ZoomFactor = 1R
         ' 
@@ -42,11 +42,12 @@ Partial Class Guide
         ' 
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(759, 485)
+        ClientSize = New Size(982, 553)
         Controls.Add(WebView)
         Margin = New Padding(4, 5, 4, 5)
         MinimizeBox = False
         Name = "Guide"
+        ShowIcon = False
         StartPosition = FormStartPosition.CenterParent
         Text = "Guide:"
         CType(WebView, ComponentModel.ISupportInitialize).EndInit()

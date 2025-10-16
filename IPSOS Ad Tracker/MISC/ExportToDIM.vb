@@ -18,29 +18,29 @@ Namespace Global.ExportToDIM
 			Dim ExportTxt As String = $"Note:{vbCrLf}The below information is intended to be a rough scripting of the Tracker metadata, routing, and logic.{vbCrLf}This may be missing important data you'll need or include duplicate scripting.{vbCrLf}Be sure to review and test each part when implementing.{vbCrLf}{vbCrLf}{vbCrLf}"
 
 			ExportTxt &= $"Metadata:{vbCrLf}{vbCrLf}"
-			ExportTxt &= $"{Tabs(1)}Ad_Source ""[HIDDEN] Data Source"" categorical [1..1] " & "{" & "_1 ""Staging"", _2 ""Production""};" & vbCrLf & vbCrLf
-			ExportTxt &= $"{Tabs(1)}Ad_Version ""Program Version:"" text [1..];" & vbCrLf & vbCrLf
-			ExportTxt &= $"{Tabs(1)}Ad_User ""Last Saved By:"" text [1..];" & vbCrLf & vbCrLf
-			ExportTxt &= $"{Tabs(1)}Ad_Date ""Last Saved On:"" text [1..];" & vbCrLf & vbCrLf
+			ExportTxt &= $"{Tabs(1)}Ad_Source [IIS_HiddenQ = true] ""[HIDDEN] Data Source"" categorical [1..1] " & "{" & "_1 ""Staging"", _2 ""Production""};" & vbCrLf & vbCrLf
+			ExportTxt &= $"{Tabs(1)}Ad_Version [IIS_HiddenQ = true] style(Control(Type = ""SingleLineEdit"")) ""Program Version:"" text [1..];" & vbCrLf & vbCrLf
+			ExportTxt &= $"{Tabs(1)}Ad_User [IIS_HiddenQ = true] style(Control(Type = ""SingleLineEdit"")) ""Last Saved By:"" text [1..];" & vbCrLf & vbCrLf
+			ExportTxt &= $"{Tabs(1)}Ad_Date [IIS_HiddenQ = true] style(Control(Type = ""SingleLineEdit"")) ""Last Saved On:"" text [1..];" & vbCrLf & vbCrLf
 
 			For Each List As KeyValuePair(Of String, ListManager) In Study.Lists
-				ExportTxt &= $"{Tabs(1)}{Study.Lists(List.Key).Name}_List [IIS_HiddenQ= true] ""[HIDDEN] Contains all listed ads"" loop [0..25] fields{vbCrLf}{Tabs(1)}({vbCrLf}{vbCrLf}"
-				ExportTxt &= $"{Tabs(2)}'Item 0{vbCrLf}{Tabs(2)}Ad_Punch ""[HIDDEN] Ad_Punch Value"" style (Control(Type = ""SingleLineEdit"")) text [1..];{vbCrLf}{vbCrLf}"
+				ExportTxt &= $"{Tabs(1)}{Study.Lists(List.Key).Name}_List [IIS_HiddenQ = true] ""[HIDDEN] Contains all listed ads"" loop [0..25] fields{vbCrLf}{Tabs(1)}({vbCrLf}{vbCrLf}"
+				ExportTxt &= $"{Tabs(2)}'Item 0{vbCrLf}{Tabs(2)}Ad_Punch [IIS_HiddenQ = true] ""[HIDDEN] Ad_Punch Value"" style (Control(Type = ""SingleLineEdit"")) text [1..];{vbCrLf}{vbCrLf}"
 				For i As Integer = 1 To Study.Variables.Count
-					ExportTxt &= $"{Tabs(2)}'Item {i}{vbCrLf}{Tabs(2)}{Study.Variables(i).txtName.Text} ""[HIDDEN] {Study.Variables(i).txtName.Text}"" style (Control(Type = ""SingleLineEdit"")) text [1..];{vbCrLf}{vbCrLf}"
+					ExportTxt &= $"{Tabs(2)}'Item {i}{vbCrLf}{Tabs(2)}{Study.Variables(i).txtName.Text} [IIS_HiddenQ = true] style (Control(Type = ""SingleLineEdit"")) ""[HIDDEN] {Study.Variables(i).txtName.Text}"" text [1..];{vbCrLf}{vbCrLf}"
 				Next
 				ExportTxt &= $"{Tabs(1)}) expand grid;{vbCrLf}{vbCrLf}"
-				ExportTxt &= $"{Tabs(1)}{Study.Lists(List.Key).Name}_Available ""[HIDDEN] {Study.Lists(List.Key).Name} Available"" categorical [0..]{vbCrLf}{Tabs(1)}{{{vbCrLf}"
+				ExportTxt &= $"{Tabs(1)}{Study.Lists(List.Key).Name}_Available [IIS_HiddenQ = true] ""[HIDDEN] {Study.Lists(List.Key).Name} Available"" categorical [0..]{vbCrLf}{Tabs(1)}{{{vbCrLf}"
 				For i As Integer = 1 To 25
 					ExportTxt &= $"{Tabs(2)}_{i} ""Listed Ad #{i}""{vbCrLf}"
 				Next
 				ExportTxt &= $"{Tabs(1)}}} ran;{vbCrLf}{vbCrLf}"
-				ExportTxt &= $"{Tabs(1)}{Study.Lists(List.Key).Name}_Page ""[HIDDEN] Show Current Ads Available"" page( Ad_Version, Ad_User, {Study.Lists(List.Key).Name}_List);{vbCrLf}{vbCrLf}"
+				ExportTxt &= $"{Tabs(1)}{Study.Lists(List.Key).Name}_Page [IIS_HiddenQ = true] ""[HIDDEN] Show Current Ads Available"" page( Ad_Version, Ad_User, {Study.Lists(List.Key).Name}_List);{vbCrLf}{vbCrLf}"
 			Next
 
-			ExportTxt &= $"{Tabs(1)}PN: This data is considered *ROTATED* for DP purposes.{vbCrLf}{Tabs(1)}The categorical value and label are used for data purposes to apply automated de-rotation.{vbCrLf}{Tabs(1)}All variables that will be de-rotated *must* have ""_FLD"" appended to the name (excluding loop scales).{vbCrLf}{Tabs(1)}Any labels or temporary variables that do not need de-rotating should *not* have this appended.{vbCrLf}{vbCrLf}"
+			ExportTxt &= $"{Tabs(1)}'PN: This data is considered *ROTATED* for DP/Harmoni purposes.{vbCrLf}{Tabs(1)}'The categorical value and label are used for data purposes to apply automated de-rotation.{vbCrLf}{Tabs(1)}'All variables that will be de-rotated *must* have ""_FLD"" appended to the name (excluding loop scales).{vbCrLf}{Tabs(1)}'Any labels or temporary variables that do not need de-rotating should *not* have this appended.{vbCrLf}{vbCrLf}"
 			For Each List As KeyValuePair(Of String, ListManager) In Study.Lists
-				ExportTxt &= $"{Tabs(1)}Ads_Loop_FLD """" loop {vbCrLf}{Tabs(1)}{{{vbCrLf}"
+				ExportTxt &= $"{Tabs(1)}Ads_Loop """" loop {vbCrLf}{Tabs(1)}{{{vbCrLf}"
 				For i As Integer = 1 To 25
 					Select Case i
 						Case 1, 21
@@ -59,17 +59,38 @@ Namespace Global.ExportToDIM
 				ExportTxt &= $"{Tabs(2)}Ad_Assigned ""[HIDDEN] Ad Evaluated for this loop"" categorical [1..1] {{ [INSERT CATEGORIES HERE }};{vbCrLf}{vbCrLf}"
 				ExportTxt &= $"{Tabs(2)}Ad_Name ""[HIDDEN] Ad_Name"" text [1..1];{vbCrLf}{vbCrLf}"
 				For i As Integer = 1 To Study.Variables.Count
-					If Study.Variables(i).txtName.Text <> "Ad_Name" Then
-						'' Review the logic to account for the data type set for each variable:
-						ExportTxt &= $"{Tabs(2)}{Study.Variables(i).txtName.Text}_FLD ""[HIDDEN] {Study.Variables(i).txtName.Text}"" categorical [1..1] {{ [INSERT CATEGORIES HERE }};{vbCrLf}{vbCrLf}"
+					If LCase(Study.Variables(i).txtName.Text) <> "ad_name" Then
+						Select Case CType(Study.Variables(i).boxType.SelectedItem, DataType).Name
+							Case "Punch/Categorical"
+								ExportTxt &= $"{Tabs(2)}{Study.Variables(i).txtName.Text}_FLD [IIS_HiddenQ = true] ""[HIDDEN] {Study.Variables(i).txtName.Text}"" categorical [1..1] {{"
+								If Study.Variables(i).PList.Punches.Count > 0 Then
+									For Each P As KeyValuePair(Of Integer, Punch) In Study.Variables(i).PList.Punches
+										With Study.Variables(i).PList.Punches(P.Key)
+											ExportTxt &= $"{ .txtValue.Text} ""{ .txtLabel.Text}"", "
+										End With
+									Next
+									ExportTxt = Mid(ExportTxt, 1, Len(ExportTxt) - 2)
+								Else
+									ExportTxt &= $"[INSERT CATEGORIES HERE]"
+								End If
+								ExportTxt &= $"}};{vbCrLf}{vbCrLf}"
+							Case "Number"
+								ExportTxt &= $"{Tabs(2)}{Study.Variables(i).txtName.Text}_FLD [IIS_HiddenQ = True] ""[HIDDEN] {Study.Variables(i).txtName.Text}"" Long [0..];{vbCrLf}{vbCrLf}"
+							Case "Yes/No"
+								ExportTxt &= $"{Tabs(2)}{Study.Variables(i).txtName.Text}_FLD [IIS_HiddenQ = True] ""[HIDDEN] {Study.Variables(i).txtName.Text}"" Boolean;{vbCrLf}{vbCrLf}"
+							Case "Date/Time"
+								ExportTxt &= $"{Tabs(2)}{Study.Variables(i).txtName.Text}_FLD [IIS_HiddenQ = True] ""[HIDDEN] {Study.Variables(i).txtName.Text}"" Date;{vbCrLf}{vbCrLf}"
+							Case Else
+								ExportTxt &= $"{Tabs(2)}{Study.Variables(i).txtName.Text}_FLD [IIS_HiddenQ = True] ""[HIDDEN] {Study.Variables(i).txtName.Text}"" text [0..];{vbCrLf}{vbCrLf}"
+						End Select
 					End If
 				Next
 				ExportTxt &= $"{Tabs(2)}'ADD Any Non-Imported Variables Here:{vbCrLf}{vbCrLf}{Tabs(1)}) expand grid;{vbCrLf}{vbCrLf}"
-			Next
+            Next
 
 
 			ExportTxt &= $"{vbCrLf}{vbCrLf}Routing:{vbCrLf}{vbCrLf}"
-			ExportTxt &= $"{Tabs(1)}'PN: Include this in routing before the first question for Quality Testing/Verification purposes.{vbCrLf}"
+			ExportTxt &= $"{Tabs(1)}'PN: Include this in routing before the first question for Quality Testing/Verification purposes:{vbCrLf}{vbCrLf}"
 			ExportTxt &= $"{Tabs(1)}Dim cat, ReadAds,Ad,AdListDir,AdsToShow{vbCrLf}"
 
 			For Each List As KeyValuePair(Of String, ListManager) In Study.Lists
@@ -87,21 +108,22 @@ Namespace Global.ExportToDIM
 				ExportTxt &= $"{Tabs(1)}ImportAds(IOM, ""{Study.Lists(List.Key).Name}_List"", ReadAds){vbCrLf}{vbCrLf}"
 				ExportTxt &= $"{Tabs(1)}if idtype = {{test}} then{vbCrLf}"
 				ExportTxt &= $"{Tabs(2)}{Study.Lists(List.Key).Name}_Page.Show(){vbCrLf}"
-				ExportTxt &= $"{Tabs(1)}end if{vbCrLf}{vbCrLf}"
+				ExportTxt &= $"{Tabs(1)}end if{vbCrLf}{vbCrLf}{vbCrLf}{vbCrLf}"
 
 
-				ExportTxt &= $"{Tabs(1)}'PN: Include this is routing where {Study.Lists(List.Key).Name} are asked:{vbCrLf}"
+				ExportTxt &= $"{Tabs(1)}'PN: Include this is routing where {Study.Lists(List.Key).Name} are asked:{vbCrLf}{vbCrLf}"
 				ExportTxt &= $"{Tabs(1)}'---- {Study.Lists(List.Key).Name} SECTION:{vbCrLf}"
 				ExportTxt &= $"{Tabs(1)}If idtype = {{test}} Then {Study.Lists(List.Key).Name}_List.Show(){vbCrLf}{vbCrLf}"
 
 				ExportTxt &= $"{Tabs(1)}'----- {Study.Lists(List.Key).Name}_Available{vbCrLf}"
+				ExportTxt &= $"{Tabs(1)}'----- PN: Include any Study Specific Selection Logic Here:{vbCrLf}"
 				ExportTxt &= $"{Tabs(1)}If {Study.Lists(List.Key).Name}_Available.info.OffPathResponse = null Then{vbCrLf}"
 				ExportTxt &= $"{Tabs(2)}{Study.Lists(List.Key).Name}_Available.Categories.Filter = nset(Len({Study.Lists(List.Key).Name}_List.Categories)){vbCrLf}"
 				ExportTxt &= $"{Tabs(2)}{Study.Lists(List.Key).Name}_Available.Response = {Study.Lists(List.Key).Name}_Available.Categories.Filter.Ran(){vbCrLf}"
 				ExportTxt &= $"{Tabs(1)}Else{vbCrLf}"
 				ExportTxt &= $"{Tabs(2)}{Study.Lists(List.Key).Name}_Available.Response = {Study.Lists(List.Key).Name}_Available.info.OffPathResponse{vbCrLf}"
 				ExportTxt &= $"{Tabs(1)}End If{vbCrLf}"
-				ExportTxt &= $"{Tabs(1)}{Study.Lists(List.Key).Name}_Loop_FLD.Categories.Filter = nset(Len({Study.Lists(List.Key).Name}_Available.Response)){vbCrLf}{vbCrLf}"
+				ExportTxt &= $"{Tabs(1)}{Study.Lists(List.Key).Name}_Loop.Categories.Filter = nset(Len({Study.Lists(List.Key).Name}_Available.Response)){vbCrLf}{vbCrLf}"
 
 				ExportTxt &= $"{Tabs(1)}AdsToShow = {Study.Lists(List.Key).Name}_Available.Response{vbCrLf}"
 				ExportTxt &= $"{Tabs(1)}hasVideo.Response = {{_2}}{vbCrLf}"
@@ -109,16 +131,22 @@ Namespace Global.ExportToDIM
 				ExportTxt &= $"{Tabs(1)}hasAudio.Response = {{_2}}{vbCrLf}{vbCrLf}"
 
 				ExportTxt &= $"{Tabs(1)}For cat = 0 To Len(AdsToShow) - 1{vbCrLf}"
-				ExportTxt &= $"{Tabs(2)}With {Study.Lists(List.Key).Name}_Loop_FLD[cat]{vbCrLf}"
+				ExportTxt &= $"{Tabs(2)}With {Study.Lists(List.Key).Name}_Loop[cat]{vbCrLf}"
 				ExportTxt &= $"{Tabs(3)}.Ad_Assigned.Response = ccategorical({Study.Lists(List.Key).Name}_List[ccategorical(AdsToShow[cat])].Ad_Punch.Response.Value){vbCrLf}"
 				ExportTxt &= $"{Tabs(3)}.Ad_Name.Response.Value = {Study.Lists(List.Key).Name}_List[ccategorical(AdsToShow[cat])].Ad_Name.Response.Value{vbCrLf}"
-				For i As Integer = 1 To Study.Variables.Count
-					If Study.Variables(i).txtName.Text <> "Punch" And
-						Study.Variables(i).txtName.Text <> "Ad_Name" And
-						Study.Variables(i).txtName.Text <> "Medium" And
-						Study.Variables(i).txtName.Text <> "File_Name" Then
-						'' Review the logic to account for the data type set for each variable:
-						ExportTxt &= $"{Tabs(3)}.{Study.Variables(i).txtName.Text}_FLD.Response = ccategorical(""_"" + {Study.Lists(List.Key).Name}_List[ccategorical(AdsToShow[cat])].{Study.Variables(i).txtName.Text}.Response.Value){vbCrLf}"
+
+				For i As Integer = 2 To Study.Variables.Count
+					If LCase(Study.Variables(i).txtName.Text) <> "ad_name" Then
+						Select Case CType(Study.Variables(i).boxType.SelectedItem, DataType).Name
+							Case "Punch/Categorical"
+								ExportTxt &= $"{Tabs(3)}.{Study.Variables(i).txtName.Text}_FLD.Response = ccategorical(""_"" + {Study.Lists(List.Key).Name}_List[ccategorical(AdsToShow[cat])].{Study.Variables(i).txtName.Text}.Response.Value){vbCrLf}"
+							Case "Number"
+								ExportTxt &= $"{Tabs(3)}.{Study.Variables(i).txtName.Text}_FLD.Response = clong({Study.Lists(List.Key).Name}_List[ccategorical(AdsToShow[cat])].{Study.Variables(i).txtName.Text}.Response.Value){vbCrLf}"
+							Case "Yes/No"
+								ExportTxt &= $"{Tabs(3)}.{Study.Variables(i).txtName.Text}_FLD.Response = cbool({Study.Lists(List.Key).Name}_List[ccategorical(AdsToShow[cat])].{Study.Variables(i).txtName.Text}.Response.Value){vbCrLf}"
+							Case Else
+								ExportTxt &= $"{Tabs(3)}.{Study.Variables(i).txtName.Text}_FLD.Response = {Study.Lists(List.Key).Name}_List[ccategorical(AdsToShow[cat])].{Study.Variables(i).txtName.Text}.Response.Value{vbCrLf}"
+						End Select
 					End If
 				Next
 				ExportTxt &= $"{Tabs(3)}If containsany(.Ad_Medium_FLD.Response, {{_1, _3, _8}}) Then hasVideo.Response = {{_1}}{vbCrLf}"
@@ -143,6 +171,7 @@ Namespace Global.ExportToDIM
 			ExportTxt &= $"{Tabs(2)}Dim Ad 'Current Ad Categorical Value{vbCrLf}"
 			ExportTxt &= $"{Tabs(2)}Dim Var 'Current Variable Value{vbCrLf}"
 			ExportTxt &= $"{Tabs(2)}Dim Data 'Current Data Value{vbCrLf}"
+			ExportTxt &= $"{Tabs(2)}Dim ChildrenList{vbCrLf}"
 			ExportTxt &= $"{Tabs(2)}Dim i, j{vbCrLf}{vbCrLf}"
 
 			ExportTxt &= $"{Tabs(2)}AdLines = Split(strFile, mr.CrLf){vbCrLf}"
@@ -153,11 +182,15 @@ Namespace Global.ExportToDIM
 
 			ExportTxt &= $"{Tabs(2)}AdVariables = Split(AdLines[2], mr.Tab){vbCrLf}{vbCrLf}"
 
-			ExportTxt &= $"{Tabs(2)}IOM.Questions[AdLoop].Categories.Filter = nset(Len(AdLines) - 4) {vbCrLf}"
+			ExportTxt &= $"{Tabs(2)}For i = 0 To IOM.Questions[AdLoop].Item[0].Count - 1{vbCrLf}"
+			ExportTxt &= $"{Tabs(3)}ChildrenList = ChildrenList + LCase(IOM.Questions[AdLoop].Item[0].Item[i].QuestionName) + "" ""{vbCrLf}"
+			ExportTxt &= $"{Tabs(2)}Next{vbCrLf}{vbCrLf}"
+
+			ExportTxt &= $"{Tabs(2)}IOM.Questions[AdLoop].QuestionFilter = ""1.."" + ctext(len(AdLines) - 4){vbCrLf}"
 			ExportTxt &= $"{Tabs(2)}For i = 3 To UBound(AdLines) - 1{vbCrLf}"
 			ExportTxt &= $"{Tabs(3)}CurrentAd = Split(AdLines[i], mr.Tab){vbCrLf}"
 			ExportTxt &= $"{Tabs(3)}If CurrentAd[0] <> """" Then{vbCrLf}"
-			ExportTxt &= $"{Tabs(4)}Ad = i - 3{vbCrLf}"
+			ExportTxt &= $"{Tabs(4)}Ad = i - 2{vbCrLf}"
 			ExportTxt &= $"{Tabs(4)}For j = 0 To UBound(AdVariables) - 1{vbCrLf}"
 			ExportTxt &= $"{Tabs(5)}Var = AdVariables[j]{vbCrLf}"
 			ExportTxt &= $"{Tabs(5)}Data = CurrentAd[j]{vbCrLf}"
@@ -165,15 +198,9 @@ Namespace Global.ExportToDIM
 			ExportTxt &= $"{Tabs(6)}Trim(Data) <> """" Then{vbCrLf}"
 			ExportTxt &= $"{Tabs(6)}Select Case LCase(Var){vbCrLf}"
 			ExportTxt &= $"{Tabs(7)}Case ""punch""{vbCrLf}"
-			ExportTxt &= $"{Tabs(8)}if (CheckIfQuestionExists(IOM, IOM.Questions[AdLoop].Item[i-1].Item[""Ad_Punch""])) then IOM.Questions[AdLoop].Item[Ad].Item[""Ad_Punch""].Response.Value = Data{vbCrLf}"
-			ExportTxt &= $"{Tabs(7)}Case ""ad_name""{vbCrLf}"
-			ExportTxt &= $"{Tabs(8)}if (CheckIfQuestionExists(IOM, IOM.Questions[AdLoop].Item[i-1].Item[""Ad_Name""])) then IOM.Questions[AdLoop].Item[Ad].Item[""Ad_Name""].Response.Value = Data{vbCrLf}"
-			ExportTxt &= $"{Tabs(7)}Case ""medium""{vbCrLf}"
-			ExportTxt &= $"{Tabs(8)}if (CheckIfQuestionExists(IOM, IOM.Questions[AdLoop].Item[i-1].Item[""Medium""])) then IOM.Questions[AdLoop].Item[Ad].Item[""Medium""].Response.Value = Data{vbCrLf}"
-			ExportTxt &= $"{Tabs(7)}Case ""file_name""{vbCrLf}"
-			ExportTxt &= $"{Tabs(8)}if (CheckIfQuestionExists(IOM, IOM.Questions[AdLoop].Item[i-1].Item[""File_Name""])) then IOM.Questions[AdLoop].Item[Ad].Item[""File_Name""].Response.Value = Data{vbCrLf}"
+			ExportTxt &= $"{Tabs(8)}IOM.Questions[AdLoop].Item[Ad].Item[""Ad_Punch""].Response.Value = Data{vbCrLf}"
 			ExportTxt &= $"{Tabs(7)}Case Else{vbCrLf}"
-			ExportTxt &= $"{Tabs(8)}if (CheckIfQuestionExists(IOM, IOM.Questions[AdLoop].Item[i-1].Item[Var])) then IOM.Questions[AdLoop].Item[Ad].Item[Var].Response.Value = Data{vbCrLf}"
+			ExportTxt &= $"{Tabs(8)}if find(ChildrenList,lcase(Var)) > -1 then IOM.Questions[AdLoop].Item[Ad].Item[Var].Response.Value = Data{vbCrLf}"
 			ExportTxt &= $"{Tabs(6)}End Select{vbCrLf}"
 			ExportTxt &= $"{Tabs(5)}End If{vbCrLf}"
 			ExportTxt &= $"{Tabs(4)}Next{vbCrLf}"
@@ -187,24 +214,46 @@ Namespace Global.ExportToDIM
 			ExportTxt &= $"{Tabs(2)}IOM.Questions[""Ad_User""].Response.Value = ""user@ipsos.com""{vbCrLf}"
 			ExportTxt &= $"{Tabs(2)}IOM.Questions[""Ad_Date""].Response.Value = ctext(Now()){vbCrLf}{vbCrLf}"
 
+			ExportTxt &= $"{Tabs(2)}For i = 0 To IOM.Questions[AdLoop].Item[0].Count - 1{vbCrLf}"
+			ExportTxt &= $"{Tabs(3)}ChildrenList = ChildrenList + LCase(IOM.Questions[AdLoop].Item[0].Item[i].QuestionName) + "" ""{vbCrLf}"
+			ExportTxt &= $"{Tabs(2)}Next{vbCrLf}{vbCrLf}"
+
 			ExportTxt &= $"{Tabs(2)}Dim Max{vbCrLf}"
 			ExportTxt &= $"{Tabs(2)}Max = generatelongbetween(1, 10){vbCrLf}"
-			ExportTxt &= $"{Tabs(2)}IOM.Questions[AdLoop].Categories.Filter = nset(Max){vbCrLf}"
-			ExportTxt &= $"{Tabs(2)}For i = 1 To Max{vbCrLf}"
+			ExportTxt &= $"{Tabs(2)}IOM.Questions[AdLoop].QuestionFilter = ""1.."" + ctext(Max){vbCrLf}"
+			ExportTxt &= $"{Tabs(2)}For i = 3 To Max{vbCrLf}"
 
 			ExportTxt &= $"{Tabs(3)}IOM.Questions[AdLoop].Item[i-1].Item[0].Response.Value = ""_"" + ctext(i){vbCrLf}"
-			ExportTxt &= $"{Tabs(3)}if (CheckIfQuestionExists(IOM, IOM.Questions[AdLoop].Item[i-1].Item[""Ad_Name""])) then IOM.Questions[AdLoop].Item[i-1].Item[""Ad_Name""].Response.Value = ""Ad #"" + ctext(i){vbCrLf}"
-			ExportTxt &= $"{Tabs(3)}if (CheckIfQuestionExists(IOM, IOM.Questions[AdLoop].Item[i-1].Item[""Medium""])) then IOM.Questions[AdLoop].Item[i-1].Item[""Medium""].Response.Value = ""_"" + ctext(i){vbCrLf}"
-			ExportTxt &= $"{Tabs(3)}if (CheckIfQuestionExists(IOM, IOM.Questions[AdLoop].Item[i-1].Item[""File_Name""])) then IOM.Questions[AdLoop].Item[i-1].Item[""File_Name""].Response.Value = ""File "" + ctext(i){vbCrLf}"
+			ExportTxt &= $"{Tabs(3)}IOM.Questions[AdLoop].Item[i-1].Item[1].Response.Value = ""Ad #"" + ctext(i){vbCrLf}"
 
-			For i As Integer = 1 To Study.Variables.Count
-				If Study.Variables(i).txtName.Text <> "Punch" And
-				   Study.Variables(i).txtName.Text <> "Ad_Name" And
-				   Study.Variables(i).txtName.Text <> "Medium" And
-				   Study.Variables(i).txtName.Text <> "File_Name" Then
-					ExportTxt &= $"{Tabs(3)}if (CheckIfQuestionExists(IOM, IOM.Questions[AdLoop].Item[i-1].Item[""{Study.Variables(i).txtName.Text}""])) then IOM.Questions[AdLoop].Item[i-1].Item[""{Study.Variables(i).txtName.Text}""].Response.Value = ctext(generatelongbetween(1,9)){vbCrLf}"
+			For i As Integer = 2 To Study.Variables.Count
+				If LCase(Study.Variables(i).txtName.Text) <> "ad_name" Then
+					Select Case CType(Study.Variables(i).boxType.SelectedItem, DataType).Name
+						Case "Punch/Categorical"
+							ExportTxt &= $"{Tabs(3)}if find(ChildrenList,lcase(""{Study.Variables(i).txtName.Text}"")) > -1 then IOM.Questions[AdLoop].Item[i-1].Item[""{Study.Variables(i).txtName.Text}""].Response.Value = "
+							If Study.Variables(i).PList.Punches.Count > 0 Then
+								ExportTxt &= "ccategorical(ctext(split("""
+								For Each P As KeyValuePair(Of Integer, Punch) In Study.Variables(i).PList.Punches
+									With Study.Variables(i).PList.Punches(P.Key)
+										ExportTxt &= $"{ .txtValue.Text},"
+									End With
+								Next
+								ExportTxt = Mid(ExportTxt, 1, Len(ExportTxt) - 1)
+								ExportTxt &= $""","","").Ran(1))){vbCrLf}"
+							Else
+								ExportTxt &= $"ccategorical(""_"" + ctext(generatelongbetween(1,9))){vbCrLf}"
+							End If
+						Case "Number"
+							ExportTxt &= $"{Tabs(3)}if find(ChildrenList,lcase(""{Study.Variables(i).txtName.Text}"")) > -1 then IOM.Questions[AdLoop].Item[i-1].Item[""{Study.Variables(i).txtName.Text}""].Response.Value = generatelongbetween(1,9){vbCrLf}"
+						Case "Yes/No"
+							ExportTxt &= $"{Tabs(3)}if find(ChildrenList,lcase(""{Study.Variables(i).txtName.Text}"")) > -1 then IOM.Questions[AdLoop].Item[i-1].Item[""{Study.Variables(i).txtName.Text}""].Response.Value = cbool(ctext(split(""True,False"","","").Ran(1))){vbCrLf}"
+						Case Else
+							ExportTxt &= $"{Tabs(3)}if find(ChildrenList,lcase(""{Study.Variables(i).txtName.Text}"")) > -1 then IOM.Questions[AdLoop].Item[i-1].Item[""{Study.Variables(i).txtName.Text}""].Response.Value = ""Ad #"" + ctext(i){vbCrLf}"
+					End Select
 				End If
 			Next
+
+
 			ExportTxt &= $"{Tabs(2)}Next{vbCrLf}{vbCrLf}"
 
 			ExportTxt &= $"{Tabs(1)}End Sub{vbCrLf}{vbCrLf}"
