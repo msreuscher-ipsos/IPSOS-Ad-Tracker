@@ -8,6 +8,7 @@
         ' This call is required by the designer.
         InitializeComponent()
 
+        If Not _Parent Is Nothing Then _Parent.lnkBatch.Visible = False
         ' Add any initialization after the InitializeComponent() call.
         If Not _Parent Is Nothing Then ParentPanel = Panel
         If Not Panel Is Nothing Then

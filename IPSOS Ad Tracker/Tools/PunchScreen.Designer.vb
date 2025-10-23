@@ -31,6 +31,7 @@ Partial Class PunchScreen
         lbl = New Label()
         btnOK = New Button()
         lblAddPunch = New LinkLabel()
+        lnkBatch = New LinkLabel()
         FlowPanel.SuspendLayout()
         HeaderPanel.SuspendLayout()
         CType(SplitContainer, ComponentModel.ISupportInitialize).BeginInit()
@@ -99,6 +100,7 @@ Partial Class PunchScreen
         ' 
         ' SplitContainer.Panel1
         ' 
+        SplitContainer.Panel1.Controls.Add(lnkBatch)
         SplitContainer.Panel1.Controls.Add(lbl)
         SplitContainer.Panel1.Controls.Add(btnOK)
         SplitContainer.Panel1.Controls.Add(lblAddPunch)
@@ -138,6 +140,16 @@ Partial Class PunchScreen
         lblAddPunch.TabStop = True
         lblAddPunch.Text = "Add Value:"
         ' 
+        ' lnkBatch
+        ' 
+        lnkBatch.AutoSize = True
+        lnkBatch.Location = New Point(148, 37)
+        lnkBatch.Name = "lnkBatch"
+        lnkBatch.Size = New Size(72, 20)
+        lnkBatch.TabIndex = 3
+        lnkBatch.TabStop = True
+        lnkBatch.Text = "Batch List"
+        ' 
         ' PunchScreen
         ' 
         AcceptButton = btnOK
@@ -170,5 +182,6 @@ Partial Class PunchScreen
     Friend WithEvents lblRemove As Label
     Friend WithEvents lblLabel As Label
     Friend WithEvents lblValue As Label
+    Friend WithEvents lnkBatch As LinkLabel
 
 End Class

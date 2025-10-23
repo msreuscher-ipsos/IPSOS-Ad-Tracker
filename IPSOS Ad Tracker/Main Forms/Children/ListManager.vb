@@ -123,8 +123,12 @@ Public Class ListManager
             End With
         Next
 
+
+        Sheet.CreateColumnFilter(0, Column, 0)
+
         Sheet.DeleteRows(Row + 1, Sheet.RowCount - (Row + 1))
         Sheet.DeleteColumns(Column + 1, Sheet.ColumnCount - (Column + 1))
+
 
         'AddHandler Sheet.CellDataChanged, AddressOf EditCell
         isLoaded = True

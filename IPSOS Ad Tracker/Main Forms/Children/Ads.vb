@@ -140,7 +140,23 @@ Public Class Cell
                     Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
                 Case 6 '"File Upload"
                     isFile = True
-                    If ParentAd.Languages.ContainsKey(Head.Languages) Then
+                    If .chkCultured.Checked Then
+                        If ParentAd.Languages.ContainsKey(Head.Languages) Then
+                            Sheet.Ranges(Cell.Address).Data = NewCell
+                            Dim Border As New RangeBorderStyle
+                            Border.Color = Color.Red
+                            Border.Style = BorderLineStyle.Solid
+                            Sheet.SetRangeBorders(Cell.Address, BorderPositions.All, Border)
+                            AddHandler NewCell.Click, AddressOf GetFileName
+                            Sheet.Ranges(Cell.Address).Style.TextColor = Color.Red
+                            NewCell.ActivateColor = Color.DarkGoldenrod
+                            Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
+                        Else
+                            Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
+                            Sheet.Ranges(Cell.Address).Data = "--------------"
+                            Sheet.Ranges(Cell.Address).IsReadonly = True
+                        End If
+                    Else
                         Sheet.Ranges(Cell.Address).Data = NewCell
                         Dim Border As New RangeBorderStyle
                         Border.Color = Color.Red
@@ -150,10 +166,6 @@ Public Class Cell
                         Sheet.Ranges(Cell.Address).Style.TextColor = Color.Red
                         NewCell.ActivateColor = Color.DarkGoldenrod
                         Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
-                    Else
-                        Sheet.Ranges(Cell.Address).Style.HorizontalAlign = unvell.ReoGrid.ReoGridHorAlign.Center
-                        Sheet.Ranges(Cell.Address).Data = "--------------"
-                        Sheet.Ranges(Cell.Address).IsReadonly = True
                     End If
             End Select
         End With

@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.IO.Compression
 Imports System.IO.Packaging
 Imports System.Threading
 Imports System.Windows.Automation
@@ -109,7 +110,7 @@ Public Class SFTPWinSCP
             timeOut += 1
             Using session As New Session
                 session.Open(sessionOptions)
-                session.CreateDirectory(remotePath)
+                If session.FileExists(remotePath) Then session.CreateDirectory(remotePath)
                 session.Close()
             End Using
             timeOut = 0

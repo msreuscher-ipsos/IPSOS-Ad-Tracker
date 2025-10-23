@@ -40,5 +40,42 @@
         PCnt += 1
         Dim NewPunch As New Punch(Me, PCnt, FlowPanel)
         Punches.Add(PCnt, NewPunch)
+        lnkBatch.Visible = False
+    End Sub
+
+    Private Sub lnkBatch_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkBatch.LinkClicked
+
+        Me.Hide()
+
+        Dim Batch As New Batch_Load
+        Batch.ShowDialog()
+        If Batch.DialogResult = DialogResult.OK Then
+
+            For Each line As String In Batch.txtInput.Lines
+                If Trim(line) <> "" Then
+                    Dim CurrentLine As String = Trim(line)
+                    Dim Punch As String
+                    Dim Label As String
+                    Dim i As Integer
+                    For i = 1 To Len(CurrentLine)
+                        If Mid(CurrentLine, i, 1) = " " Then
+                            Exit For
+                        End If
+                    Next
+                    Punch = Trim(Mid(CurrentLine, 1, i - 1))
+                    Label = Trim(Mid(CurrentLine, i + 1))
+
+                    PCnt += 1
+                    Dim NewPunch As New Punch(Me, PCnt, FlowPanel)
+                    Punches.Add(PCnt, NewPunch)
+                    Punches(PCnt).txtValue.Text = Punch
+                    Punches(PCnt).txtLabel.Text = Label
+                    lnkBatch.Visible = False
+                End If
+            Next
+
+        End If
+
+        Me.Show()
     End Sub
 End Class

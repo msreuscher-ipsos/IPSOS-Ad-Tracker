@@ -64,6 +64,7 @@ Public Class VariableManager
                     Else
                         Parent.Variables.Add(VariableInfo(0), New VariablePanel(Parent, VariablePanel, VariableInfo(0), VariableInfo(2), VariableInfo(1), VariableInfo(3), VariableInfo(4),,))
                     End If
+                    Parent.CurrentIndex += 1
                 End If
             End If
         Next
