@@ -246,9 +246,15 @@ Public Class Project
                                             Dim CellKey As String = Lists(Trim(line)).Headers(HeaderIndex).Index
                                             Dim VarType As DataType = CType(Variables(VariableNames(HeaderList(j))).boxType.SelectedItem, DataType)
 
-                                            If (VarType.Value <> 2 And VarType.Value <> 6) Or
+                                            If (VarType.Value <> 2 And
+                                                VarType.Value <> 6 And
+                                                VarType.Value <> 4) Or
                                                Variables(VariableNames(LatestHeaderList(j))).PList.Punches.Count > 0 Then
                                                 Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Record(j)
+                                            ElseIf VarType.Value = 4 Then
+                                                If LCase(Record(j)) = "true" Then
+                                                    Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = True
+                                                End If
                                             ElseIf VarType.Value = 6 Then
                                                 Lists(Trim(line)).Ads(Punch).Cells(CellKey).UpdateFileCell()
                                                 Lists(Trim(line)).Ads(Punch).Cells(CellKey).LoadFiles(Record(j))
@@ -287,8 +293,13 @@ Public Class Project
                                             Dim VarType As DataType = CType(Variables(VariableNames(LatestHeaderList(j))).boxType.SelectedItem, DataType)
 
                                             If (VarType.Value <> 2 Or Variables(VariableNames(LatestHeaderList(j))).PList.Punches.Count = 0) And
+                                                VarType.Value <> 4 And
                                                 VarType.Value <> 6 Then
                                                 Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = Record(j)
+                                            ElseIf VarType.Value = 4 Then
+                                                If LCase(Record(j)) = "true" Then
+                                                    Lists(Trim(line)).Ads(Punch).Cells(CellKey).Cell.Data = True
+                                                End If
                                             ElseIf VarType.Value = 6 Then
                                                 Lists(Trim(line)).Ads(Punch).Cells(CellKey).UpdateFileCell()
                                                 Lists(Trim(line)).Ads(Punch).Cells(CellKey).LoadFiles(Record(j))

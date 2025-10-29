@@ -279,7 +279,7 @@ Namespace Global.GlobalRefs
                            Trim(.Headers(H.Key).Languages) = "" Then
                             If .Ads(A.Key).Cells(.Headers(H.Key).Index).isFile Then
                                 If .Ads(A.Key).include Then
-                                    CultureSettings &= .Ads(A.Key).Cells(.Headers(H.Key).Index).Files.GetFiles & vbTab
+                                    CultureSettings &= .Ads(A.Key).Cells(.Headers(H.Key).Index).GetFile & vbTab
                                 End If
                             Else
                                 If .Ads(A.Key).include Then

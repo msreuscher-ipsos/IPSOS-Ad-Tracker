@@ -110,7 +110,7 @@ Public Class SFTPWinSCP
             timeOut += 1
             Using session As New Session
                 session.Open(sessionOptions)
-                If session.FileExists(remotePath) Then session.CreateDirectory(remotePath)
+                If Not session.FileExists(remotePath) Then session.CreateDirectory(remotePath)
                 session.Close()
             End Using
             timeOut = 0

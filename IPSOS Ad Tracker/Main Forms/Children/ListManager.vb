@@ -124,11 +124,11 @@ Public Class ListManager
         Next
 
 
-        Sheet.CreateColumnFilter(0, Column, 0)
+        'DO NOT INCLUDE IF ROW VALUE SET TO PUNCH VALUE:
+        'Sheet.CreateColumnFilter(0, Column, 0)
 
         Sheet.DeleteRows(Row + 1, Sheet.RowCount - (Row + 1))
         Sheet.DeleteColumns(Column + 1, Sheet.ColumnCount - (Column + 1))
-
 
         'AddHandler Sheet.CellDataChanged, AddressOf EditCell
         isLoaded = True

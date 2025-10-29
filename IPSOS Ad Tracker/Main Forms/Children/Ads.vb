@@ -2,6 +2,7 @@
 Imports unvell.ReoGrid
 Imports unvell.ReoGrid.CellTypes
 Imports unvell.ReoGrid.DataFormat
+Imports unvell.ReoGrid.IO.OpenXML.Schema
 Public Class Ad
 
     Public ParentListManager As ListManager
@@ -94,7 +95,7 @@ Public Class Cell
         Row = _Row
         Language = _Language
 
-        Files = New FileSelect(ParentAd, Language)
+        'Files = New FileSelect(ParentAd, Language)
         SetCellFormat()
 
     End Sub
@@ -170,6 +171,14 @@ Public Class Cell
             End Select
         End With
 
+        With Head.Variable
+            Sheet.AutoFitColumnWidth(Head.Index, False)
+            If CType(.boxType.SelectedItem, DataType).Value = 2 Or
+           CType(.boxType.SelectedItem, DataType).Value = 6 Then
+                'Sheet.ColumnHeaders(Head.Index).Width = Sheet.ColumnHeaders(Head.Index).Width + 100
+            End If
+        End With
+
         'AddHandler Cell..CellKeyUp, AddressOf UpdateCell
 
     End Sub
@@ -180,22 +189,49 @@ Public Class Cell
         End If
     End Sub
 
-    Public Files As FileSelect
+    'Public Files As FileSelect
+    Public OpenFile As OpenFileDialog
+    Public File As String = ""
     Private Sub GetFileName(sender As Object, e As EventArgs)
 
-        Files.ShowDialog()
+        'Files.ShowDialog()
+
+        OpenFile = New OpenFileDialog
+        With OpenFile
+            .Title = "Select File For " & ParentAd.Label
+            .Multiselect = False
+            .Filter = "All Files|*.*|JPG Image File|*.jpg|PNG Image File|*.png|GIF Image File|*.gif|MOV File|*.mov|MP4 File|*.mp4|MP3 File|*.mp3"
+            .FilterIndex = 0
+            .FileName = ""
+        End With
+
+        If OpenFile.ShowDialog() = DialogResult.OK Then
+            File = OpenFile.FileName
+            ParentAd.ParentListManager.hasChanges.Checked = True
+        End If
         CleanCell()
 
     End Sub
 
-    Public Sub CleanCell()
+    Dim isNewFile As Boolean = False
+    Public Sub CleanCell(ByVal Optional Update As Boolean = True)
 
-        If Files.Files.Count > 0 Then
+        If Trim(File) <> "" Then
+
+            Dim GoodColor As Color
+            Select Case Update
+                Case True
+                    GoodColor = Color.Green
+                    isNewFile = True
+                Case False
+                    GoodColor = Color.Blue
+            End Select
+
             Dim Border As New RangeBorderStyle
-            Border.Color = Color.Green
+            Border.Color = GoodColor
             Border.Style = BorderLineStyle.Solid
-            NewCell.VisitedColor = Color.Green
-            Sheet.Ranges(Cell.Address).Style.TextColor = Color.Green
+            NewCell.VisitedColor = GoodColor
+            Sheet.Ranges(Cell.Address).Style.TextColor = GoodColor
             Sheet.SetRangeBorders(Cell.Address, BorderPositions.All, Border)
             Sheet.Ranges(Cell.Address).Data = "Click to view file(s)"
         Else
@@ -212,16 +248,46 @@ Public Class Cell
 
     Public Sub LoadFiles(ByVal _Files As String)
 
-        Dim LoadFiles() As String = Split(_Files, ",")
-        For Each File As String In LoadFiles
-            If File <> "" Then
-                Files.Add(File)
-            End If
-        Next
-
-        CleanCell()
+        'Dim LoadFiles() As String = Split(_Files, ",")
+        'For Each File As String In LoadFiles
+        'If File <> "" Then
+        'Files.Add(File)
+        'End If
+        'Next
+        File = _Files
+        CleanCell(False)
 
     End Sub
+
+    Public Function GetFile() As String
+        If isNewFile Then
+            Return ConvertToHTML(File)
+        Else
+            Return File
+        End If
+    End Function
+
+
+    Function ConvertToHTML(ByVal FileName As String) As String
+
+        Dim TimeStamp As String = $"{Replace(Replace(Replace(DateTime.UtcNow, "/", "."), ":", "."), " ", ".")}"
+
+        Dim TmpFileName As String = Mid(FileName, FileName.LastIndexOf("\") + 2)
+        Dim Ext As String = Mid(FileName, FileName.LastIndexOf(".") + 2)
+        TmpFileName = TmpFileName.Replace(Ext, "_" & TimeStamp & "." & Ext)
+
+        Dim TmpProject As Project = ParentAd.ParentListManager.ParentProject
+        Dim TmpListManager As ListManager = ParentAd.ParentListManager
+
+        If Trim(Language) <> "" Then
+            If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & Language & "\" & TmpFileName) <> True Then My.Computer.FileSystem.CopyFile(FileName, "C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & Language & "\" & TmpFileName)
+            Return "https://media.ipsosinteractive.com/projects/" & TmpProject.SID & "/Ads/" & TmpListManager.Name & "/" & Language & "/" & TmpFileName
+        Else
+            If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & TmpFileName) <> True Then My.Computer.FileSystem.CopyFile(FileName, "C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & Language & "\" & TmpFileName)
+            Return "https://media.ipsosinteractive.com/projects/" & TmpProject.SID & "/Ads/" & TmpListManager.Name & "/" & TmpFileName
+        End If
+
+    End Function
 
 
 End Class
