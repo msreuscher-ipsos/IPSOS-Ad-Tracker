@@ -11,7 +11,7 @@ Imports WinSCP
 Public Class SFTPWinSCP
 
     Dim sessionOptions As New SessionOptions
-    Dim timeOut As Boolean = 0
+    Dim timeOut As Integer = 0
 
     Private Sub TimeOutError(ByRef Study As Project, ByVal ex As Exception)
 

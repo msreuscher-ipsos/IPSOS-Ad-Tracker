@@ -136,9 +136,9 @@ Namespace Global.GlobalRefs
             PBar.Add("Promoting to Production for " & Study.SID)
 
             Dim SFTP As New SFTPWinSCP
-            Dim FTPDirectory As String = "/projects/" & Study.SID
+            Dim FTPDirectory As String = "/projects/" & Study.SID & "/"
 
-            SFTP.Session(Study.UserName, Study.Password, Study.IntroPage.boxServer.Text)
+            SFTP.Session(Study.UserName, Study.Password, Study.FTP)
 
             If SFTP.DirectoryExists(Study, FTPDirectory) = False Then
                 PBar.Add("FTP Folder does not exist.")
