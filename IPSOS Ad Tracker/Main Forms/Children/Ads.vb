@@ -281,10 +281,10 @@ Public Class Cell
 
         If Trim(Language) <> "" Then
             If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & Language & "\" & TmpFileName) <> True Then My.Computer.FileSystem.CopyFile(FileName, "C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & Language & "\" & TmpFileName)
-            Return "https://media.ipsosinteractive.com/projects/" & TmpProject.SID & "/Ads/" & TmpListManager.Name & "/" & Language & "/" & TmpFileName
+            Return "https://cdn.ipsosinteractive.com/projects/" & TmpProject.SID & "/Ads/" & TmpListManager.Name & "/" & Language & "/" & TmpFileName
         Else
             If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & TmpFileName) <> True Then My.Computer.FileSystem.CopyFile(FileName, "C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & Language & "\" & TmpFileName)
-            Return "https://media.ipsosinteractive.com/projects/" & TmpProject.SID & "/Ads/" & TmpListManager.Name & "/" & TmpFileName
+            Return "https://cdn.ipsosinteractive.com/projects/" & TmpProject.SID & "/Ads/" & TmpListManager.Name & "/" & TmpFileName
         End If
 
     End Function

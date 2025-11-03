@@ -147,34 +147,34 @@ Namespace Global.GlobalRefs
                 Exit Sub
             End If
 
-            If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt") Then
-                Dim SplitMinor() As String = Split(My.Computer.FileSystem.ReadAllText("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt"), vbCrLf)
-                Dim ProductionFile As String = Study.UserName & vbCrLf &
-                                               "Staging: "(Study.VersionMajor.Value + 1) & ".0" & vbCrLf &
-                                               "Production: " & (Study.VersionMajor.Value + 1) & vbCrLf
-                For i = 3 To UBound(SplitMinor)
-                    ProductionFile &= SplitMinor(i) & vbCrLf
-                Next
-                My.Computer.FileSystem.RenameFile("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt", Study.SID & "_Version.txt." & Study.VersionMinor.Value)
-                My.Computer.FileSystem.WriteAllText("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt", ProductionFile, False)
+            'Dim SplitMinor() As String = Split(My.Computer.FileSystem.ReadAllText("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt"), vbCrLf)
+            'Dim ProductionFile As String = Study.UserName & vbCrLf &
+            '                               "Staging: "(Study.VersionMajor.Value + 1) & ".0" & vbCrLf &
+            '                               "Production: " & (Study.VersionMajor.Value + 1) & vbCrLf
+            'For i = 3 To UBound(SplitMinor)
+            ' ProductionFile &= SplitMinor(i) & vbCrLf
+            ' Next
+            'My.Computer.FileSystem.RenameFile("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt", Study.SID & "_Version.txt." & Study.VersionMinor.Value)
+            'My.Computer.FileSystem.WriteAllText("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt", ProductionFile, False)
 
+            If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt") Then
                 For Each L As KeyValuePair(Of String, ListManager) In Study.Lists
                     With Study.Lists(L.Key)
                         For Each Lang As KeyValuePair(Of String, Language) In .Languages
                             If Study.Lists(L.Key).Languages(Lang.Key).chkLanguage.Checked Then
                                 Dim FileDir As String = "C:\Ad Loader\" & Study.SID & "\Ads\" & .Name & "\" & Lang.Key & "\"
-                                SplitMinor = Split(My.Computer.FileSystem.ReadAllText(FileDir & Study.SID & "_Staging.txt"), vbCrLf)
-                                ProductionFile = (Study.VersionMajor.Value + 1) & ".0" & vbCrLf &
-                                                 Study.UserName & "," &
-                                                 Study.LoadDate & "," &
-                                                .lblTitle.Text & "," &
-                                                .Languages(Lang.Key).Country.Code & ":" & .Languages(Lang.Key).Country.Name & "," &
-                                                .Languages(Lang.Key).Language & vbCrLf
-                                For i = 2 To UBound(SplitMinor)
-                                    ProductionFile &= SplitMinor(i) & vbCrLf
-                                Next
+                                'SplitMinor = Split(My.Computer.FileSystem.ReadAllText(FileDir & Study.SID & "_Staging.txt"), vbCrLf)
+                                'ProductionFile = (Study.VersionMajor.Value + 1) & ".0" & vbCrLf &
+                                'Study.UserName & "," &
+                                'Study.LoadDate & "," &
+                                '.lblTitle.Text & "," &
+                                '.Languages(Lang.Key).Country.Code & ":" & .Languages(Lang.Key).Country.Name & "," &
+                                '.Languages(Lang.Key).Language & vbCrLf
+                                'For i = 2 To UBound(SplitMinor)
+                                'ProductionFile &= SplitMinor(i) & vbCrLf
+                                'Next
                                 If My.Computer.FileSystem.FileExists(FileDir & Study.SID & "_Production.txt") Then My.Computer.FileSystem.RenameFile(FileDir & Study.SID & "_Production.txt", Study.SID & "_Production.txt." & Study.VersionMajor.Value)
-                                My.Computer.FileSystem.WriteAllText(FileDir & Study.SID & "_Production.txt", ProductionFile, False)
+                                My.Computer.FileSystem.CopyFile(FileDir & Study.SID & "_Staging.txt", FileDir & Study.SID & "_Production.txt", True)
                             End If
                         Next
                     End With
@@ -186,7 +186,7 @@ Namespace Global.GlobalRefs
                 Exit Sub
             End If
             Study.VersionMajor.Value += 1
-            Study.VersionMinor.Value = Study.VersionMajor.Value
+            Study.VersionMinor.Value = 0 'Study.VersionMajor.Value
 
             PBar.Add("Synchronizating FTP Files with Local Files.")
             SFTP.Sync(Study, New Progress, SynchronizationMode.Remote, "C:\Ad Loader\" & Study.SID, FTPDirectory)

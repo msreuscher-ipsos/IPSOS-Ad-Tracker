@@ -76,10 +76,10 @@ Public Class FileSelect
 
         If Trim(Language) <> "" Then
             If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & Language & "\" & TmpFileName) <> True Then My.Computer.FileSystem.CopyFile(FileName.File, "C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & Language & "\" & TmpFileName)
-            Return "https://media.ipsosinteractive.com/projects/" & TmpProject.SID & "/Ads/" & TmpListManager.Name & "/" & Language & "/" & TmpFileName
+            Return "https://cdn.ipsosinteractive.com/projects/" & TmpProject.SID & "/Ads/" & TmpListManager.Name & "/" & Language & "/" & TmpFileName
         Else
             If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & TmpFileName) <> True Then My.Computer.FileSystem.CopyFile(FileName.File, "C:\Ad Loader\" & TmpProject.SID & "\Ads\" & TmpListManager.Name & "\" & Language & "\" & TmpFileName)
-            Return "https://media.ipsosinteractive.com/projects/" & TmpProject.SID & "/Ads/" & TmpListManager.Name & "/" & TmpFileName
+            Return "https://cdn.ipsosinteractive.com/projects/" & TmpProject.SID & "/Ads/" & TmpListManager.Name & "/" & TmpFileName
         End If
 
     End Function
@@ -136,7 +136,7 @@ Public Class File
         Else
             Try
                 Dim img_url As String = File ' Replace with the actual image URL
-                img_url = Replace(Replace(img_url, "//", "/"), "https:/media.ipsosinteractive.com/projects/", "file:///C:/Ad%20Loader/")
+                img_url = Replace(Replace(img_url, "//", "/"), "https:/cdn.ipsosinteractive.com/projects/", "file:///C:/Ad%20Loader/")
                 Dim req As Net.HttpWebRequest = DirectCast(Net.HttpWebRequest.Create(img_url), Net.HttpWebRequest)
                 Dim res As Net.HttpWebResponse = DirectCast(req.GetResponse, Net.HttpWebResponse)
                 Dim img As System.Drawing.Image = New System.Drawing.Bitmap(res.GetResponseStream)
