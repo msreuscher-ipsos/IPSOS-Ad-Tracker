@@ -1,4 +1,5 @@
-﻿Imports System.Xml
+﻿Imports System.Windows.Documents
+Imports System.Xml
 Imports GlobalRefs.Export
 Imports GlobalRefs.GlobalFunctions
 Imports IPSOS_Ad_Tracker.Intro
@@ -115,7 +116,7 @@ Public Class Project
                             ProjInfo.Variables = Split(Trim(Value), ";")
                         Case "lists"
                             ProjInfo.Lists = Split(Trim(Value), ",")
-                        Case "exclude"
+                        Case "excludes"
                             ProjInfo.Excludes = Split(Trim(Value), ",")
                         Case "max"
                             ProjInfo.Max = Trim(Value)
@@ -325,11 +326,29 @@ Public Class Project
                     End If
                 End If
             Next
-            readyForProduction.Checked = True
-        End If
 
-        'MainPanel.SplitterDistance = ListStrip.Width
-        Me.WindowState = FormWindowState.Maximized
+            For Each L As String In ProjInfo.Excludes
+                If Trim(L) <> "" Then
+                    If Lists.ContainsKey(L) Then
+                        ExcludeLists.Add(L, Lists(L))
+                        FlowLayout.Controls.Remove(Lists(L).Tool)
+                        ListPanel.Controls.Remove(Lists(L))
+                        Lists.Remove(L)
+                    Else
+                        If Not ExcludeLists.ContainsKey(L) Then
+                            ExcludeLists.Add(L, New ListManager(Me, Variables, L, L))
+                        End If
+                        FlowLayout.Controls.Remove(ExcludeLists(L).Tool)
+                        ListPanel.Controls.Remove(ExcludeLists(L))
+                    End If
+                End If
+            Next
+
+            readyForProduction.Checked = True
+            End If
+
+            'MainPanel.SplitterDistance = ListStrip.Width
+            Me.WindowState = FormWindowState.Maximized
 
         For Each L As KeyValuePair(Of String, ListManager) In Lists
             PBar.Add($"Validating List: {Lists(L.Key).lblTitle.Text}")
