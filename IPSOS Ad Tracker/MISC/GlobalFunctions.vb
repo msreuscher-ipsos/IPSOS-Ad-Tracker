@@ -1,4 +1,5 @@
-﻿Imports System.Windows.Documents
+﻿Imports System.IO
+Imports System.Windows.Documents
 Imports GlobalRefs.GlobalFunctions
 Imports IPSOS_Ad_Tracker
 Imports WinSCP
@@ -174,7 +175,11 @@ Namespace Global.GlobalRefs
                                 'ProductionFile &= SplitMinor(i) & vbCrLf
                                 'Next
                                 If My.Computer.FileSystem.FileExists(FileDir & Study.SID & "_Production.txt") Then My.Computer.FileSystem.RenameFile(FileDir & Study.SID & "_Production.txt", Study.SID & "_Production.txt." & Study.VersionMajor.Value)
-                                My.Computer.FileSystem.CopyFile(FileDir & Study.SID & "_Staging.txt", FileDir & Study.SID & "_Production.txt", True)
+                                Dim SW As New StreamWriter(FileDir & Study.SID & "_Production.txt", False)
+                                Dim SR As New StreamReader(FileDir & Study.SID & "_Staging.txt")
+                                SW.Write(SR.ReadToEnd)
+                                SW.Close()
+                                'My.Computer.FileSystem.CopyFile(FileDir & Study.SID & "_Staging.txt", FileDir & Study.SID & "_Production.txt", True)
                             End If
                         Next
                     End With
