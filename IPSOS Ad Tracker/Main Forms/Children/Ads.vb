@@ -13,7 +13,7 @@ Public Class Ad
 
     Public Row As Integer
     Public Index As Integer
-    Public isNew As Boolean
+    Public isNew As Boolean = True
     Public isUpdated As Boolean = False
     Public include As Boolean = True
 

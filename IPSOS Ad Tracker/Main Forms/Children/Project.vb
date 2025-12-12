@@ -241,6 +241,7 @@ Public Class Project
                                 Dim VCnt As Integer = 0
                                 Dim Punch As String = Record(0)
                                 If Lists(Trim(line)).Ads.ContainsKey(Punch) Then
+                                    Lists(Trim(line)).Ads(Punch).isNew = False
                                     For j As Integer = 0 To UBound(HeaderList)
                                         If CulturedList(j) Then
                                             Dim HeaderIndex As String = Variables(VariableNames(HeaderList(j))).txtName.Text & " - " & Language
@@ -284,6 +285,7 @@ Public Class Project
                             Dim VCnt As Integer = 0
                             Dim Punch As String = Record(0)
                             If Lists(Trim(line)).Ads.ContainsKey(Punch) Then
+                                Lists(Trim(line)).Ads(Punch).isNew = False
                                 For j As Integer = 0 To UBound(LatestHeaderList)
                                     If LatestCulturedList(j) = False And
                                        Trim(LatestHeaderList(j)) <> "" Then

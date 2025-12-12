@@ -28,8 +28,9 @@ Partial Class ListManager
         Book = New unvell.ReoGrid.ReoGridControl()
         MainSplitContainer = New SplitContainer()
         SplitContainer1 = New SplitContainer()
-        lblLanguage = New Label()
+        chkImageFilter = New CheckBox()
         LanguageFlow = New FlowLayoutPanel()
+        lblLanguage = New Label()
         SplitContainer2 = New SplitContainer()
         ListToolStrip = New ToolStrip()
         btnStaging = New ToolStripButton()
@@ -46,6 +47,7 @@ Partial Class ListManager
         SplitContainer1.Panel1.SuspendLayout()
         SplitContainer1.Panel2.SuspendLayout()
         SplitContainer1.SuspendLayout()
+        LanguageFlow.SuspendLayout()
         CType(SplitContainer2, ComponentModel.ISupportInitialize).BeginInit()
         SplitContainer2.Panel1.SuspendLayout()
         SplitContainer2.Panel2.SuspendLayout()
@@ -134,7 +136,7 @@ Partial Class ListManager
         ' 
         ' SplitContainer1.Panel1
         ' 
-        SplitContainer1.Panel1.Controls.Add(lblLanguage)
+        SplitContainer1.Panel1.Controls.Add(chkImageFilter)
         ' 
         ' SplitContainer1.Panel2
         ' 
@@ -143,17 +145,19 @@ Partial Class ListManager
         SplitContainer1.SplitterDistance = 100
         SplitContainer1.TabIndex = 1
         ' 
-        ' lblLanguage
+        ' chkImageFilter
         ' 
-        lblLanguage.AutoSize = True
-        lblLanguage.Location = New Point(3, 13)
-        lblLanguage.Name = "lblLanguage"
-        lblLanguage.Size = New Size(83, 20)
-        lblLanguage.TabIndex = 0
-        lblLanguage.Text = "Languages:"
+        chkImageFilter.AutoSize = True
+        chkImageFilter.Location = New Point(0, 5)
+        chkImageFilter.Name = "chkImageFilter"
+        chkImageFilter.Size = New Size(101, 24)
+        chkImageFilter.TabIndex = 1
+        chkImageFilter.Text = "Show New"
+        chkImageFilter.UseVisualStyleBackColor = True
         ' 
         ' LanguageFlow
         ' 
+        LanguageFlow.Controls.Add(lblLanguage)
         LanguageFlow.Dock = DockStyle.Fill
         LanguageFlow.FlowDirection = FlowDirection.TopDown
         LanguageFlow.Location = New Point(0, 0)
@@ -161,6 +165,15 @@ Partial Class ListManager
         LanguageFlow.Padding = New Padding(5)
         LanguageFlow.Size = New Size(897, 62)
         LanguageFlow.TabIndex = 0
+        ' 
+        ' lblLanguage
+        ' 
+        lblLanguage.Location = New Point(5, 5)
+        lblLanguage.Margin = New Padding(0)
+        lblLanguage.Name = "lblLanguage"
+        lblLanguage.Size = New Size(83, 47)
+        lblLanguage.TabIndex = 0
+        lblLanguage.Text = "Languages:"
         ' 
         ' SplitContainer2
         ' 
@@ -233,6 +246,7 @@ Partial Class ListManager
         SplitContainer1.Panel2.ResumeLayout(False)
         CType(SplitContainer1, ComponentModel.ISupportInitialize).EndInit()
         SplitContainer1.ResumeLayout(False)
+        LanguageFlow.ResumeLayout(False)
         SplitContainer2.Panel1.ResumeLayout(False)
         SplitContainer2.Panel1.PerformLayout()
         SplitContainer2.Panel2.ResumeLayout(False)
@@ -254,4 +268,5 @@ Partial Class ListManager
     Friend WithEvents ListToolStrip As ToolStrip
     Friend WithEvents btnStaging As ToolStripButton
     Friend WithEvents btnPromote As ToolStripButton
+    Friend WithEvents chkImageFilter As CheckBox
 End Class

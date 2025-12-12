@@ -193,6 +193,25 @@ Public Class ListManager
 
     End Sub
 
+    Private Sub chkImageFilter_CheckedChanged(sender As Object, e As EventArgs) Handles chkImageFilter.CheckedChanged
+        If chkImageFilter.Checked Then
+            For Each Key In Ads
+                If Ads(Key.Key).isNew Then
+                    Sheet.ShowRows(Ads(Key.Key).Row, 1)
+                Else
+                    Sheet.HideRows(Ads(Key.Key).Row, 1)
+                End If
+            Next
+        Else
+            For Each Key In Ads
+                Sheet.ShowRows(Ads(Key.Key).Row, 1)
+            Next
+        End If
+    End Sub
+
+    Private Sub ToolStripNewItems_Click(sender As Object, e As EventArgs)
+        'ToolStripNewItems = True
+    End Sub
 End Class
 
 Public Class Header

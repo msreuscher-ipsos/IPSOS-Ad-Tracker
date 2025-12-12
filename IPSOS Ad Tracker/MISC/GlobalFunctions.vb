@@ -157,13 +157,13 @@ Namespace Global.GlobalRefs
             ' Next
             'My.Computer.FileSystem.RenameFile("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt", Study.SID & "_Version.txt." & Study.VersionMinor.Value)
             'My.Computer.FileSystem.WriteAllText("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt", ProductionFile, False)
-
+            Dim FileDir As String
             If My.Computer.FileSystem.FileExists("C:\Ad Loader\" & Study.SID & "\Ads\" & Study.SID & "_Version.txt") Then
                 For Each L As KeyValuePair(Of String, ListManager) In Study.Lists
                     With Study.Lists(L.Key)
                         For Each Lang As KeyValuePair(Of String, Language) In .Languages
                             If Study.Lists(L.Key).Languages(Lang.Key).chkLanguage.Checked Then
-                                Dim FileDir As String = "C:\Ad Loader\" & Study.SID & "\Ads\" & .Name & "\" & Lang.Key & "\"
+                                FileDir = "C:\Ad Loader\" & Study.SID & "\Ads\" & .Name & "\" & Lang.Key & "\"
                                 'SplitMinor = Split(My.Computer.FileSystem.ReadAllText(FileDir & Study.SID & "_Staging.txt"), vbCrLf)
                                 'ProductionFile = (Study.VersionMajor.Value + 1) & ".0" & vbCrLf &
                                 'Study.UserName & "," &
@@ -174,7 +174,7 @@ Namespace Global.GlobalRefs
                                 'For i = 2 To UBound(SplitMinor)
                                 'ProductionFile &= SplitMinor(i) & vbCrLf
                                 'Next
-                                If My.Computer.FileSystem.FileExists(FileDir & Study.SID & "_Production.txt") Then My.Computer.FileSystem.RenameFile(FileDir & Study.SID & "_Production.txt", Study.SID & "_Production.txt." & Study.VersionMajor.Value)
+                                If My.Computer.FileSystem.FileExists(FileDir & Study.SID & "_Production.txt") Then My.Computer.FileSystem.RenameFile(FileDir & Study.SID & "_Production.txt", Study.SID & "_Production.txt." & Study.VersionMinor.Value)
                                 Dim SW As New StreamWriter(FileDir & Study.SID & "_Production.txt", False)
                                 Dim SR As New StreamReader(FileDir & Study.SID & "_Staging.txt")
                                 SW.Write(SR.ReadToEnd)
@@ -184,6 +184,8 @@ Namespace Global.GlobalRefs
                         Next
                     End With
                 Next
+
+
             Else
                 PBar.Add("Study File does not exist.")
                 PBar.Add("Stopping process.")
@@ -192,6 +194,23 @@ Namespace Global.GlobalRefs
             End If
             Study.VersionMajor.Value += 1
             Study.VersionMinor.Value = 0 'Study.VersionMajor.Value
+
+            FileDir = "C:\Ad Loader\" & Study.SID & "\Ads\"
+            Dim SR2 As New StreamReader(FileDir & Study.SID & "_Version.txt")
+            Dim VersionInfo As String = SR2.ReadLine & vbCrLf
+            Dim Version As String = SR2.ReadLine & vbCrLf
+            VersionInfo &= "Staging: " & Int(Study.VersionMajor.Value) + 1 & ".00" & vbCrLf
+            SR2.ReadLine()
+            VersionInfo &= "Production:" & Replace(Version, "Staging: ", "")
+            VersionInfo &= SR2.ReadToEnd
+            SR2.Close()
+
+            If My.Computer.FileSystem.FileExists(FileDir & Study.SID & "_Version.txt") Then My.Computer.FileSystem.RenameFile(FileDir & Study.SID & "_Version.txt", Study.SID & "_Version.txt." & Study.VersionMajor.Value & "." & Study.VersionMinor.Value)
+
+            Dim SW2 As New StreamWriter(FileDir & Study.SID & "_Version.txt", False)
+            SW2.Write(VersionInfo)
+            SW2.Close()
+
 
             PBar.Add("Synchronizating FTP Files with Local Files.")
             SFTP.Sync(Study, New Progress, SynchronizationMode.Remote, "C:\Ad Loader\" & Study.SID, FTPDirectory)
